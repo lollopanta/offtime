@@ -22,7 +22,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group"
@@ -187,7 +186,7 @@ function MobileNavigation({ searchHref }: { searchHref: string }) {
         <MenuIcon aria-hidden="true" />
       </SheetTrigger>
       <SheetContent
-        className="w-[min(88vw,23rem)] border-border bg-popover p-0"
+        className="w-[min(88vw,23rem)] border-border bg-background p-0"
         side="left"
       >
         <SheetHeader className="border-b border-border px-6 py-6">
@@ -247,30 +246,26 @@ export function SiteHeader({
   className,
   searchHref = "/cerca",
 }: SiteHeaderProps) {
-  const [isDesktopSearchOpen, setIsDesktopSearchOpen] = React.useState(false)
-  const desktopSearch = React.useRef<HTMLDivElement>(null)
+  const [isNavbarSearchOpen, setIsNavbarSearchOpen] = React.useState(false)
+  const navbarSearch = React.useRef<HTMLDivElement>(null)
+  const searchTrigger = React.useRef<HTMLButtonElement>(null)
 
-  const closeDesktopSearch = () => {
-    setIsDesktopSearchOpen(false)
+  const closeNavbarSearch = () => {
+    setIsNavbarSearchOpen(false)
 
     window.requestAnimationFrame(() => {
-      desktopSearch.current?.parentElement
-        ?.querySelector<HTMLButtonElement>("[data-search-trigger]")
-        ?.focus()
+      searchTrigger.current?.focus()
     })
   }
 
-  const toggleDesktopSearch = () => {
-    const nextValue = !isDesktopSearchOpen
-    setIsDesktopSearchOpen(nextValue)
+  const openNavbarSearch = () => {
+    setIsNavbarSearchOpen(true)
 
-    if (nextValue) {
+    window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          desktopSearch.current?.querySelector("input")?.focus()
-        })
+        navbarSearch.current?.querySelector("input")?.focus()
       })
-    }
+    })
   }
 
   return (
@@ -282,15 +277,27 @@ export function SiteHeader({
         )}
       >
         <div className="offtime-container">
-          <div className="grid min-h-16 grid-cols-[auto_1fr_auto_auto] items-center gap-3 py-2 xl:grid-cols-[auto_1fr_auto] xl:gap-5 xl:py-3">
-            <div className="flex items-center xl:hidden">
+          <div className="grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 xl:gap-5 xl:py-3">
+            <div
+              aria-hidden={isNavbarSearchOpen}
+              className={cn(
+                "flex items-center transition-opacity duration-150 motion-reduce:transition-none xl:hidden",
+                isNavbarSearchOpen && "pointer-events-none opacity-0"
+              )}
+              inert={isNavbarSearchOpen}
+            >
               <MobileNavigation searchHref={searchHref} />
             </div>
 
             <a
+              aria-hidden={isNavbarSearchOpen}
               aria-label="OFFTIME, home"
-              className="flex min-w-0 items-center justify-center rounded-sm xl:justify-start"
+              className={cn(
+                "flex min-w-0 items-center justify-center rounded-sm transition-opacity duration-150 motion-reduce:transition-none xl:justify-start",
+                isNavbarSearchOpen && "pointer-events-none opacity-0"
+              )}
               href="/"
+              inert={isNavbarSearchOpen}
             >
               <img
                 alt="OFFTIME"
@@ -302,38 +309,15 @@ export function SiteHeader({
               />
             </a>
 
-            <Sheet>
-              <SheetTrigger
-                render={
-                  <Button
-                    aria-label="Apri la ricerca"
-                    className={cn("xl:hidden", navbarIconClass)}
-                    size="icon"
-                    variant="ghost"
-                  />
-                }
-              >
-                <SearchIcon aria-hidden="true" />
-              </SheetTrigger>
-              <SheetContent
-                className="h-auto border-border bg-popover p-0"
-                side="top"
-              >
-                <SheetHeader className="px-6 pt-7 pb-4">
-                  <SheetTitle className="offtime-display text-2xl">
-                    Cerca nel catalogo
-                  </SheetTitle>
-                  <SheetDescription>
-                    Trova box, carte singole e i prossimi drop.
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-                  <ProductSearch searchHref={searchHref} />
-                </div>
-              </SheetContent>
-            </Sheet>
-
-            <NavigationMenu className="hidden xl:flex">
+            <NavigationMenu
+              aria-hidden={isNavbarSearchOpen}
+              className={cn(
+                "hidden transition-opacity duration-150 motion-reduce:transition-none xl:flex",
+                isNavbarSearchOpen && "pointer-events-none opacity-0"
+              )}
+              inert={isNavbarSearchOpen}
+              sideOffset={28}
+            >
               <NavigationMenuList className="gap-0.5">
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent px-3 hover:bg-surface-3 data-open:bg-surface-3">
@@ -374,105 +358,120 @@ export function SiteHeader({
 
             <div className="flex items-center justify-end gap-0.5">
               <div
-                className="relative hidden h-11 w-11 xl:block"
+                className="relative h-11 w-11 shrink-0"
                 onKeyDown={(event) => {
-                  if (event.key === "Escape") {
-                    closeDesktopSearch()
+                  if (event.key === "Escape" && isNavbarSearchOpen) {
+                    closeNavbarSearch()
                   }
                 }}
               >
                 <div
-                  ref={desktopSearch}
-                  aria-hidden={!isDesktopSearchOpen}
-                  id="desktop-product-search"
-                  inert={!isDesktopSearchOpen}
+                  ref={navbarSearch}
+                  aria-hidden={!isNavbarSearchOpen}
+                  id="navbar-product-search"
+                  inert={!isNavbarSearchOpen}
                   className={cn(
-                    "absolute inset-y-0 right-0 w-[min(42vw,34rem)] origin-right overflow-hidden rounded-md border border-border bg-surface-2 shadow-[0_16px_48px_rgb(0_0_0_/_0.28)] transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:transition-none",
-                    isDesktopSearchOpen
+                    "absolute inset-y-0 right-[-2.875rem] w-[min(calc(100vw-2rem),76rem)] origin-right overflow-hidden rounded-md bg-surface-2 shadow-[0_16px_48px_rgb(0_0_0_/_0.28)] transition-[opacity,transform] duration-[260ms] ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform motion-reduce:transform-none motion-reduce:transition-opacity xl:right-[-8.625rem]",
+                    isNavbarSearchOpen
                       ? "scale-x-100 opacity-100"
-                      : "pointer-events-none scale-x-[0.08] opacity-0"
+                      : "pointer-events-none scale-x-[0.12] opacity-0"
                   )}
                 >
                   <ProductSearch
                     compact
-                    onDismiss={closeDesktopSearch}
+                    onDismiss={closeNavbarSearch}
                     searchHref={searchHref}
                   />
                 </div>
-                {!isDesktopSearchOpen ? (
-                  <Button
-                    aria-controls="desktop-product-search"
-                    aria-expanded={false}
-                    aria-label="Apri la ricerca"
-                    className={cn("relative z-10", navbarIconClass)}
-                    data-search-trigger
-                    onClick={toggleDesktopSearch}
-                    size="icon"
-                    variant="ghost"
-                  >
-                    <SearchIcon aria-hidden="true" />
-                  </Button>
-                ) : null}
+                <Button
+                  ref={searchTrigger}
+                  aria-controls="navbar-product-search"
+                  aria-expanded={isNavbarSearchOpen}
+                  aria-hidden={isNavbarSearchOpen}
+                  aria-label="Apri la ricerca"
+                  className={cn(
+                    "absolute inset-0 transition-[opacity,transform] duration-150 motion-reduce:transition-none",
+                    navbarIconClass,
+                    isNavbarSearchOpen
+                      ? "pointer-events-none scale-95 opacity-0"
+                      : "scale-100 opacity-100"
+                  )}
+                  inert={isNavbarSearchOpen}
+                  onClick={openNavbarSearch}
+                  size="icon"
+                  variant="ghost"
+                >
+                  <SearchIcon aria-hidden="true" />
+                </Button>
               </div>
 
-              <div className="hidden items-center gap-0.5 xl:flex">
-                <HeaderIconButton href="/preferiti" label="Preferiti">
-                  <HeartIcon aria-hidden="true" />
-                </HeaderIconButton>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={
-                      <Button
-                        aria-label="Apri il menu account"
-                        className={navbarIconClass}
-                        size="icon"
-                        variant="ghost"
-                      />
-                    }
-                  >
-                    <UserRoundIcon aria-hidden="true" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="border border-border bg-popover shadow-[0_18px_55px_rgb(0_0_0_/_0.35)]"
-                  >
-                    <DropdownMenuLabel>Il tuo account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem render={<a href="/account" />}>
-                        Profilo
-                      </DropdownMenuItem>
-                      <DropdownMenuItem render={<a href="/ordini" />}>
-                        I tuoi ordini
-                      </DropdownMenuItem>
-                      <DropdownMenuItem render={<a href="/accesso" />}>
-                        Accedi
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-              <a
-                aria-label={
-                  cartCount === 1
-                    ? "Carrello, 1 articolo"
-                    : `Carrello, ${cartCount} articoli`
-                }
+              <div
+                aria-hidden={isNavbarSearchOpen}
                 className={cn(
-                  "relative inline-flex items-center justify-center rounded-md text-foreground transition-[background-color,color,transform] hover:bg-surface-3",
-                  navbarIconClass
+                  "flex items-center gap-0.5 transition-opacity duration-150 motion-reduce:transition-none",
+                  isNavbarSearchOpen && "pointer-events-none opacity-0"
                 )}
-                href="/carrello"
+                inert={isNavbarSearchOpen}
               >
-                <ShoppingBagIcon aria-hidden="true" />
-                {cartCount > 0 ? (
-                  <span className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-offtime-pink text-[0.625rem] font-bold text-background tabular-nums">
-                    {cartCount > 9 ? "9+" : cartCount}
-                  </span>
-                ) : null}
-              </a>
+                <div className="hidden items-center gap-0.5 xl:flex">
+                  <HeaderIconButton href="/preferiti" label="Preferiti">
+                    <HeartIcon aria-hidden="true" />
+                  </HeaderIconButton>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          aria-label="Apri il menu account"
+                          className={navbarIconClass}
+                          size="icon"
+                          variant="ghost"
+                        />
+                      }
+                    >
+                      <UserRoundIcon aria-hidden="true" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="border border-border bg-popover shadow-[0_18px_55px_rgb(0_0_0_/_0.35)]"
+                      sideOffset={24}
+                    >
+                      <DropdownMenuGroup>
+                        <DropdownMenuLabel>Il tuo account</DropdownMenuLabel>
+                        <DropdownMenuItem render={<a href="/account" />}>
+                          Profilo
+                        </DropdownMenuItem>
+                        <DropdownMenuItem render={<a href="/ordini" />}>
+                          I tuoi ordini
+                        </DropdownMenuItem>
+                        <DropdownMenuItem render={<a href="/accesso" />}>
+                          Accedi
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <a
+                  aria-label={
+                    cartCount === 1
+                      ? "Carrello, 1 articolo"
+                      : `Carrello, ${cartCount} articoli`
+                  }
+                  className={cn(
+                    "relative inline-flex items-center justify-center rounded-md text-foreground transition-[background-color,color,transform] hover:bg-surface-3",
+                    navbarIconClass
+                  )}
+                  href="/carrello"
+                >
+                  <ShoppingBagIcon aria-hidden="true" />
+                  {cartCount > 0 ? (
+                    <span className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-offtime-pink text-[0.625rem] font-bold text-background tabular-nums">
+                      {cartCount > 9 ? "9+" : cartCount}
+                    </span>
+                  ) : null}
+                </a>
+              </div>
             </div>
           </div>
         </div>

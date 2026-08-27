@@ -102,7 +102,7 @@ export function ProductCard({
         <img
           alt={product.imageAlt ?? `${product.name}, ${product.language}`}
           className={cn(
-            "size-full object-cover object-center transition-[filter,transform] duration-700 ease-out group-hover/product-card:scale-105 group-hover/product-card:contrast-125",
+            "size-full origin-center scale-[1.04] object-cover object-center transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/product-card:scale-100 motion-reduce:scale-100 motion-reduce:transition-none",
             isSoldOut && "opacity-60 grayscale"
           )}
           height="1125"
