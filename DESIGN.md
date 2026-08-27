@@ -10,29 +10,32 @@ The OFFTIME interface is a dark, premium e-commerce system: product and choice a
 
 ## Brand palette
 
-| Token | Value | Intended use |
-| --- | --- | --- |
-| `--offtime-blue` | `#4658AD` | Brand blue, supporting graphic accents |
-| `--offtime-blue-bright` | `#7185FF` | Primary action, keyboard focus ring |
-| `--offtime-pink` | `#EF75AA` | Secondary brand accent |
-| `--offtime-pink-bright` | `#FF9BC4` | Highlighted text and small moments of delight |
-| `--surface-0` | `#08090D` | Application background |
-| `--surface-1` | `#101218` | Default card/surface |
-| `--surface-2` | `#181B24` | Raised surface |
-| `--surface-3` | `#222633` | Secondary action or higher contrast surface |
+| Token                   | Value     | Intended use                                       |
+| ----------------------- | --------- | -------------------------------------------------- |
+| `--offtime-blue`        | `#4658AD` | Primary brand and filled action color              |
+| `--offtime-blue-bright` | `#7185FF` | Focus, hover, selected states and small highlights |
+| `--offtime-pink`        | `#EF75AA` | Secondary brand accent                             |
+| `--offtime-pink-bright` | `#FF9BC4` | Highlighted text and small moments of delight      |
+| `--offtime-violet`      | `#8B68D7` | Editorial accent sampled from the logo             |
+| `--surface-0`           | `#08090D` | Application background                             |
+| `--surface-1`           | `#101218` | Default card/surface                               |
+| `--surface-2`           | `#181B24` | Raised surface                                     |
+| `--surface-3`           | `#222633` | Secondary action or higher contrast surface        |
 
-Use blue for the single next action in a decision. Use pink sparingly for active emphasis, release moments, and personality. Do not fill large areas with pink.
+Use deep blue for the single next action in a decision. Bright blue belongs to focus, hover, selected states and small highlights—not large fills. Use pink for releases and personality, and violet for occasional editorial depth.
 
 ## Typography
 
 - **Display and UI:** `Geist Variable`. Display headings use `--font-offtime-display` with tight tracking and balanced wrapping.
-- **Metadata:** `--font-offtime-mono` for SKUs, prices, dates, inventory, and token names.
+- **Metadata:** `--font-offtime-mono` for game names, SKUs, set codes, dates, language, inventory, and token names.
+- **Prices:** UI/sans typography with tabular numerals. Prices are commercial hierarchy, not metadata.
 - Use primary text (`--text-primary`) for reading and `--text-secondary` for supporting copy. Avoid low-contrast gray-on-dark text.
 - Keep display headings short and wide; do not create narrow, multi-line headline blocks.
 
 ## Shape, space, and depth
 
-- Radius: `--radius-small` is `8px`; `--radius-medium` is `14px`.
+- Radius: `--radius-small` is `8px`, `--radius-medium` is `12px`, and `--radius-editorial` is `18px`.
+- Use small for compact menu items, medium for controls and inputs, and editorial for cards, campaign media and major surfaces. Do not introduce one-off radii.
 - Container: `--container-width` is `76rem`.
 - Spacing follows a 4px rhythm: `--space-1`, `--space-2`, `--space-3`, `--space-4`, `--space-6`, `--space-8`, `--space-12`, `--space-16`, and `--space-24`.
 - Surfaces have a subtle white-tinted border and layered dark shadow. Favor separation through surface depth and typography rather than heavy borders.

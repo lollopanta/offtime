@@ -25,10 +25,12 @@ const statusLabel: Record<ProductStatus, string> = {
 }
 
 function formatPrice(price: number) {
-  return `€${new Intl.NumberFormat("it-IT", {
+  return new Intl.NumberFormat("it-IT", {
+    style: "currency",
+    currency: "EUR",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(price)}`
+  }).format(price)
 }
 
 export function ProductCardSkeleton({ className }: { className?: string }) {
@@ -90,7 +92,7 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "offtime-surface group/product-card overflow-hidden bg-surface-1 transition-[background-color,border-color,box-shadow] duration-300 hover:border-primary/70 hover:bg-surface-2 hover:shadow-[0_20px_52px_rgb(0_0_0_/_0.28)]",
+        "offtime-surface group/product-card overflow-hidden bg-surface-1 transition-transform duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:bg-surface-2 hover:shadow-[0_20px_52px_rgb(0_0_0_/_0.28)] motion-reduce:transform-none motion-reduce:transition-none",
         className
       )}
     >
@@ -122,7 +124,7 @@ export function ProductCard({
               product.status === "preorder" &&
                 "border-primary bg-primary text-primary-foreground",
               product.status === "sale" &&
-                "border-offtime-pink/60 bg-accent text-accent-foreground",
+                "border-offtime-pink/60 bg-release text-release-foreground",
               isSoldOut && "bg-surface-3 text-muted-foreground"
             )}
           >
@@ -133,7 +135,7 @@ export function ProductCard({
 
       <div className="flex flex-col gap-3 p-5">
         <p
-          className="text-offtime-pink-bright font-mono text-[0.6875rem] font-semibold tracking-[0.1em] uppercase"
+          className="font-mono text-[0.6875rem] font-semibold tracking-[0.1em] text-offtime-pink-bright uppercase"
           translate="no"
         >
           {product.game}
@@ -156,7 +158,7 @@ export function ProductCard({
             {formatPrice(product.price)}
           </p>
           {product.status === "sale" && product.originalPrice ? (
-            <p className="pb-0.5 font-mono text-xs text-muted-foreground tabular-nums line-through">
+            <p className="pb-0.5 text-xs text-muted-foreground tabular-nums line-through">
               {formatPrice(product.originalPrice)}
             </p>
           ) : null}

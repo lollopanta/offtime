@@ -10,7 +10,13 @@
   --font-sans: var(--font-offtime-ui);
   --font-mono: var(--font-offtime-mono);
   --color-offtime-blue: var(--offtime-blue);
+  --color-offtime-blue-bright: var(--offtime-blue-bright);
   --color-offtime-pink: var(--offtime-pink);
+  --color-offtime-pink-bright: var(--offtime-pink-bright);
+  --color-offtime-violet: var(--offtime-violet);
+  --color-primary-hover: var(--primary-hover);
+  --color-release: var(--release);
+  --color-release-foreground: var(--release-foreground);
   --color-surface-0: var(--surface-0);
   --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
@@ -49,11 +55,11 @@
   --color-background: var(--background);
   --radius-sm: var(--radius-small);
   --radius-md: var(--radius-medium);
-  --radius-lg: calc(var(--radius-medium) + 0.25rem);
-  --radius-xl: calc(var(--radius-medium) + 0.5rem);
-  --radius-2xl: calc(var(--radius-medium) + 0.75rem);
-  --radius-3xl: calc(var(--radius-medium) + 1rem);
-  --radius-4xl: calc(var(--radius-medium) + 1.25rem);
+  --radius-lg: var(--radius-medium);
+  --radius-xl: var(--radius-editorial);
+  --radius-2xl: var(--radius-editorial);
+  --radius-3xl: var(--radius-editorial);
+  --radius-4xl: var(--radius-editorial);
 }
 
 :root {
@@ -64,6 +70,7 @@
   --offtime-blue-bright: #7185ff;
   --offtime-pink: #ef75aa;
   --offtime-pink-bright: #ff9bc4;
+  --offtime-violet: #8b68d7;
 
   /* Surface & readability system. */
   --surface-0: #08090d;
@@ -78,7 +85,8 @@
 
   /* Shape, rhythm & motion. */
   --radius-small: 0.5rem;
-  --radius-medium: 0.875rem;
+  --radius-medium: 0.75rem;
+  --radius-editorial: 1.125rem;
   --container-width: 76rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -105,27 +113,38 @@
   --card-foreground: var(--text-primary);
   --popover: var(--surface-2);
   --popover-foreground: var(--text-primary);
-  --primary: var(--offtime-blue-bright);
+  --primary: var(--offtime-blue);
+  --primary-hover: color-mix(
+    in srgb,
+    var(--offtime-blue) 82%,
+    var(--offtime-blue-bright)
+  );
   --primary-foreground: #ffffff;
   --secondary: var(--surface-3);
   --secondary-foreground: var(--text-primary);
   --muted: var(--surface-2);
   --muted-foreground: var(--text-secondary);
-  --accent: color-mix(in srgb, var(--offtime-pink) 18%, var(--surface-2));
+  --accent: color-mix(
+    in srgb,
+    var(--offtime-blue-bright) 18%,
+    var(--surface-2)
+  );
   --accent-foreground: var(--text-primary);
+  --release: color-mix(in srgb, var(--offtime-pink) 20%, var(--surface-2));
+  --release-foreground: var(--text-primary);
   --destructive: #fb7185;
   --border: var(--border-subtle);
   --input: var(--border-strong);
   --ring: var(--offtime-blue-bright);
   --radius: var(--radius-medium);
-  --chart-1: var(--offtime-blue-bright);
+  --chart-1: var(--offtime-blue);
   --chart-2: var(--offtime-pink-bright);
   --chart-3: #72d6c9;
   --chart-4: #f5c96a;
-  --chart-5: #b69cff;
+  --chart-5: var(--offtime-violet);
   --sidebar: var(--surface-1);
   --sidebar-foreground: var(--text-primary);
-  --sidebar-primary: var(--offtime-blue-bright);
+  --sidebar-primary: var(--offtime-blue);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: var(--surface-3);
   --sidebar-accent-foreground: var(--text-primary);
@@ -198,18 +217,14 @@
 
   .offtime-surface {
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-medium);
+    border-radius: var(--radius-editorial);
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.04) inset,
       0 20px 60px rgb(0 0 0 / 0.18);
   }
 
   .offtime-surface-interactive {
-    transition:
-      transform var(--transition-base),
-      border-color var(--transition-base),
-      background-color var(--transition-base),
-      box-shadow var(--transition-base);
+    transition: transform var(--transition-base);
   }
 
   .offtime-surface-interactive:hover {

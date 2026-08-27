@@ -92,7 +92,7 @@ function ProductSearch({
           autoComplete="off"
           autoFocus={autoFocus}
           className={cn(
-            "w-full bg-background shadow-none hover:border-border-strong dark:bg-input/0",
+            "w-full bg-background shadow-none hover:border-border-strong",
             compact ? "md:h-11" : "md:h-12"
           )}
           name="q"
@@ -161,7 +161,7 @@ function HeaderIconButton({
           <a
             aria-label={label}
             className={cn(
-              "inline-flex items-center justify-center rounded-md text-muted-foreground transition-[background-color,color,transform] hover:bg-surface-3 hover:text-foreground",
+              "inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-primary-hover",
               navbarIconClass
             )}
             href={href}
@@ -209,7 +209,7 @@ function MobileNavigation({ searchHref }: { searchHref: string }) {
               {navigation.map((item) => (
                 <li key={item.href}>
                   <a
-                    className="flex min-h-11 items-center rounded-sm px-3 text-lg font-medium tracking-[-0.03em] transition-[background-color,color,transform] hover:bg-surface-3 hover:text-foreground"
+                    className="flex min-h-11 items-center rounded-sm px-3 text-lg font-medium tracking-[-0.03em] transition-colors hover:bg-accent hover:text-primary-hover"
                     href={item.href}
                   >
                     {item.label}
@@ -221,14 +221,14 @@ function MobileNavigation({ searchHref }: { searchHref: string }) {
         </div>
         <div className="grid grid-cols-2 gap-3 border-t border-border p-6">
           <a
-            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 text-sm font-medium text-foreground transition-[background-color,color] hover:bg-accent"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-primary-hover"
             href="/preferiti"
           >
             <HeartIcon aria-hidden="true" />
             Preferiti
           </a>
           <a
-            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 text-sm font-medium text-foreground transition-[background-color,color] hover:bg-accent"
+            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-primary-hover"
             href="/account"
           >
             <UserRoundIcon aria-hidden="true" />
@@ -251,24 +251,54 @@ export function SiteHeader({
   className,
   searchHref = "/cerca",
 }: SiteHeaderProps) {
-  const [isNavbarSearchOpen, setIsNavbarSearchOpen] = React.useState(false)
-  const navbarSearch = React.useRef<HTMLDivElement>(null)
+  const [navbarSearchMode, setNavbarSearchMode] = React.useState<
+    "mobile" | "desktop" | null
+  >(null)
+  const desktopNavbarSearch = React.useRef<HTMLDivElement>(null)
+  const mobileNavbarSearch = React.useRef<HTMLDivElement>(null)
   const searchTrigger = React.useRef<HTMLButtonElement>(null)
+  const isNavbarSearchOpen = navbarSearchMode !== null
+  const isMobileNavbarSearchOpen = navbarSearchMode === "mobile"
 
-  const closeNavbarSearch = () => {
-    setIsNavbarSearchOpen(false)
+  const closeNavbarSearch = React.useCallback(() => {
+    setNavbarSearchMode(null)
 
     window.requestAnimationFrame(() => {
       searchTrigger.current?.focus()
     })
-  }
+  }, [])
+
+  React.useEffect(() => {
+    if (!isNavbarSearchOpen) return
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      const target = event.target as Node
+      const isInsideSearch =
+        desktopNavbarSearch.current?.contains(target) ||
+        mobileNavbarSearch.current?.contains(target) ||
+        searchTrigger.current?.contains(target) ||
+        (target instanceof Element &&
+          target.closest('[data-slot="combobox-content"]'))
+
+      if (!isInsideSearch) closeNavbarSearch()
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer)
+    return () =>
+      document.removeEventListener("pointerdown", closeOnOutsidePointer)
+  }, [closeNavbarSearch, isNavbarSearchOpen])
 
   const openNavbarSearch = () => {
-    setIsNavbarSearchOpen(true)
+    const mode = window.matchMedia("(min-width: 80rem)").matches
+      ? "desktop"
+      : "mobile"
+    setNavbarSearchMode(mode)
 
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        navbarSearch.current?.querySelector("input")?.focus()
+        const search =
+          mode === "desktop" ? desktopNavbarSearch : mobileNavbarSearch
+        search.current?.querySelector("input")?.focus()
       })
     })
   }
@@ -282,31 +312,38 @@ export function SiteHeader({
         )}
       >
         <div className="offtime-container">
-          <div className="grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 xl:gap-5 xl:py-3">
+          <div
+            className="grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 xl:gap-5 xl:py-3"
+            onKeyDown={(event) => {
+              if (event.key === "Escape" && isNavbarSearchOpen) {
+                closeNavbarSearch()
+              }
+            }}
+          >
             <div
-              aria-hidden={isNavbarSearchOpen}
+              aria-hidden={isMobileNavbarSearchOpen}
               className={cn(
                 "flex items-center transition-opacity duration-150 motion-reduce:transition-none xl:hidden",
-                isNavbarSearchOpen && "pointer-events-none opacity-0"
+                isMobileNavbarSearchOpen && "pointer-events-none opacity-0"
               )}
-              inert={isNavbarSearchOpen}
+              inert={isMobileNavbarSearchOpen}
             >
               <MobileNavigation searchHref={searchHref} />
             </div>
 
             <a
-              aria-hidden={isNavbarSearchOpen}
+              aria-hidden={isMobileNavbarSearchOpen}
               aria-label="OFFTIME, home"
               className={cn(
-                "flex min-w-0 items-center justify-center rounded-sm transition-opacity duration-150 motion-reduce:transition-none xl:justify-start",
-                isNavbarSearchOpen && "pointer-events-none opacity-0"
+                "flex min-w-0 items-center justify-center rounded-sm transition-opacity duration-150 motion-reduce:transition-none xl:col-start-1 xl:row-start-1 xl:justify-start",
+                isMobileNavbarSearchOpen && "pointer-events-none opacity-0"
               )}
               href="/"
-              inert={isNavbarSearchOpen}
+              inert={isMobileNavbarSearchOpen}
             >
               <img
                 alt="OFFTIME"
-                className="h-12 w-auto max-w-28 object-contain object-left sm:h-14 sm:max-w-32"
+                className="h-12 w-auto max-w-28 object-contain object-left sm:h-14 sm:max-w-32 xl:h-[3.75rem] xl:max-w-36"
                 fetchPriority="high"
                 height="48"
                 src="/logo.webp"
@@ -317,7 +354,7 @@ export function SiteHeader({
             <NavigationMenu
               aria-hidden={isNavbarSearchOpen}
               className={cn(
-                "hidden transition-opacity duration-150 motion-reduce:transition-none xl:flex",
+                "hidden transition-opacity duration-150 motion-reduce:transition-none xl:col-start-2 xl:row-start-1 xl:flex",
                 isNavbarSearchOpen && "pointer-events-none opacity-0"
               )}
               inert={isNavbarSearchOpen}
@@ -325,7 +362,7 @@ export function SiteHeader({
             >
               <NavigationMenuList className="gap-0.5">
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent px-3 hover:bg-surface-3 data-open:bg-surface-3">
+                  <NavigationMenuTrigger className="bg-transparent px-3 hover:bg-accent hover:text-primary-hover data-open:bg-accent data-open:text-primary-hover">
                     Shop
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="w-72 bg-popover">
@@ -350,7 +387,7 @@ export function SiteHeader({
                     <NavigationMenuLink
                       className={navigationMenuTriggerStyle({
                         className:
-                          "h-11 bg-transparent px-3 text-muted-foreground hover:bg-surface-3 hover:text-foreground",
+                          "h-11 bg-transparent px-3 text-muted-foreground hover:bg-accent hover:text-primary-hover",
                       })}
                       render={<a href={item.href} />}
                     >
@@ -361,23 +398,36 @@ export function SiteHeader({
               </NavigationMenuList>
             </NavigationMenu>
 
-            <div className="flex items-center justify-end gap-0.5">
-              <div
-                className="relative h-11 w-11 shrink-0"
-                onKeyDown={(event) => {
-                  if (event.key === "Escape" && isNavbarSearchOpen) {
-                    closeNavbarSearch()
-                  }
-                }}
-              >
+            <div
+              ref={desktopNavbarSearch}
+              aria-hidden={navbarSearchMode !== "desktop"}
+              className={cn(
+                "hidden min-w-0 origin-right transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transform-none motion-reduce:transition-opacity xl:col-start-2 xl:row-start-1 xl:block",
+                navbarSearchMode === "desktop"
+                  ? "xl:scale-x-100 xl:opacity-100"
+                  : "pointer-events-none xl:scale-x-[0.12] xl:opacity-0"
+              )}
+              id="desktop-navbar-product-search"
+              inert={navbarSearchMode !== "desktop"}
+            >
+              <ProductSearch
+                compact
+                contentSideOffset={28}
+                onDismiss={closeNavbarSearch}
+                searchHref={searchHref}
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-0.5 xl:col-start-3 xl:row-start-1">
+              <div className="relative h-11 w-11 shrink-0">
                 <div
-                  ref={navbarSearch}
-                  aria-hidden={!isNavbarSearchOpen}
-                  id="navbar-product-search"
-                  inert={!isNavbarSearchOpen}
+                  ref={mobileNavbarSearch}
+                  aria-hidden={navbarSearchMode !== "mobile"}
+                  id="mobile-navbar-product-search"
+                  inert={navbarSearchMode !== "mobile"}
                   className={cn(
-                    "absolute inset-y-0 right-[-2.875rem] w-[min(calc(100vw-2rem),76rem)] origin-right overflow-hidden rounded-md bg-surface-2 shadow-[0_16px_48px_rgb(0_0_0_/_0.28)] transition-[opacity,transform] duration-[260ms] ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform motion-reduce:transform-none motion-reduce:transition-opacity xl:right-[-8.625rem]",
-                    isNavbarSearchOpen
+                    "absolute inset-y-0 right-[-2.875rem] w-[min(calc(100vw-2rem),76rem)] origin-right overflow-hidden rounded-md bg-surface-2 shadow-[0_16px_48px_rgb(0_0_0_/_0.28)] transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform motion-reduce:transform-none motion-reduce:transition-opacity xl:hidden",
+                    navbarSearchMode === "mobile"
                       ? "scale-x-100 opacity-100"
                       : "pointer-events-none scale-x-[0.12] opacity-0"
                   )}
@@ -391,7 +441,7 @@ export function SiteHeader({
                 </div>
                 <Button
                   ref={searchTrigger}
-                  aria-controls="navbar-product-search"
+                  aria-controls="mobile-navbar-product-search desktop-navbar-product-search"
                   aria-expanded={isNavbarSearchOpen}
                   aria-hidden={isNavbarSearchOpen}
                   aria-label="Apri la ricerca"
@@ -412,12 +462,12 @@ export function SiteHeader({
               </div>
 
               <div
-                aria-hidden={isNavbarSearchOpen}
+                aria-hidden={isMobileNavbarSearchOpen}
                 className={cn(
                   "flex items-center gap-0.5 transition-opacity duration-150 motion-reduce:transition-none",
-                  isNavbarSearchOpen && "pointer-events-none opacity-0"
+                  isMobileNavbarSearchOpen && "pointer-events-none opacity-0"
                 )}
-                inert={isNavbarSearchOpen}
+                inert={isMobileNavbarSearchOpen}
               >
                 <div className="hidden items-center gap-0.5 xl:flex">
                   <HeaderIconButton href="/preferiti" label="Preferiti">
@@ -465,7 +515,7 @@ export function SiteHeader({
                       : `Carrello, ${cartCount} articoli`
                   }
                   className={cn(
-                    "relative inline-flex items-center justify-center rounded-md text-foreground transition-[background-color,color,transform] hover:bg-surface-3",
+                    "relative inline-flex items-center justify-center rounded-md text-foreground transition-colors hover:bg-accent hover:text-primary-hover",
                     navbarIconClass
                   )}
                   href="/carrello"

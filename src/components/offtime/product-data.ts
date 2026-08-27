@@ -21,7 +21,8 @@ export const temporaryProducts: Product[] = [
     language: "ENG",
     price: 119.9,
     status: "available",
-    image: "https://i.imgur.com/FltJi1C.png",
+    image:
+      "https://gomgomcards.com/wp-content/uploads/2026/02/op09-sealed-booster-box-eng-gom-gomwatermark.webp",
     href: "/prodotto/op-09-emperors-in-the-new-world",
   },
   {
@@ -31,7 +32,8 @@ export const temporaryProducts: Product[] = [
     language: "ENG",
     price: 109.9,
     status: "preorder",
-    image: "https://picsum.photos/seed/offtime-one-piece/900/1125",
+    image:
+      "https://placehold.co/900x1125/172044/f7f7fa?text=OP-10%0ABOOSTER+BOX",
     href: "/prodotto/op-10-royal-blood-booster-box",
   },
   {
@@ -42,7 +44,8 @@ export const temporaryProducts: Product[] = [
     price: 64.9,
     originalPrice: 74.9,
     status: "sale",
-    image: "https://picsum.photos/seed/offtime-pokemon/900/1125",
+    image:
+      "https://placehold.co/900x1125/2a1723/f7f7fa?text=MEGA+EVOLUTION%0AETB",
     href: "/prodotto/mega-evolution-elite-trainer-box",
   },
   {
@@ -52,7 +55,19 @@ export const temporaryProducts: Product[] = [
     language: "ENG",
     price: 449.9,
     status: "sold-out",
-    image: "https://picsum.photos/seed/offtime-mtg/900/1125",
+    image:
+      "https://placehold.co/900x1125/181b24/f7f7fa?text=FINAL+FANTASY%0ACOLLECTOR+BOX",
     href: "/prodotto/final-fantasy-collector-booster-box",
+  },
+  {
+    game: "Disney Lorcana",
+    name: "Reign of Jafar Booster Display",
+    type: "Booster Box",
+    language: "ENG",
+    price: 124.9,
+    status: "available",
+    image:
+      "https://placehold.co/900x1125/241629/f7f7fa?text=REIGN+OF+JAFAR%0ABOOSTER+DISPLAY",
+    href: "/prodotto/reign-of-jafar-booster-display",
   },
 ]

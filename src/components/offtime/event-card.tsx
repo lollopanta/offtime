@@ -1,5 +1,6 @@
 import { ArrowRightIcon } from "lucide-react"
 
+import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
@@ -7,8 +8,9 @@ import { cn } from "@/lib/utils"
 export type Event = {
   game: string
   name: string
-  date: string
-  time: string
+  date?: string
+  time?: string
+  startsAt?: string
   availableSlots: number
   totalSlots: number
   price: number
@@ -26,9 +28,41 @@ export type EventCardProps = {
 function formatPrice(price: number) {
   if (price === 0) return "Gratis"
 
-  return `€${new Intl.NumberFormat("it-IT", {
+  return new Intl.NumberFormat("it-IT", {
+    style: "currency",
+    currency: "EUR",
     maximumFractionDigits: 2,
-  }).format(price)}`
+  }).format(price)
+}
+
+function formatSchedule(event: Event) {
+  if (!event.startsAt) {
+    return {
+      date: event.date?.trim() || "DA DEFINIRE",
+      time: event.time?.trim() || "—",
+    }
+  }
+
+  const startsAt = new Date(event.startsAt)
+  if (Number.isNaN(startsAt.getTime())) {
+    return { date: "DA DEFINIRE", time: "—" }
+  }
+
+  return {
+    date: new Intl.DateTimeFormat("it-IT", {
+      day: "2-digit",
+      month: "short",
+      timeZone: "Europe/Rome",
+    })
+      .format(startsAt)
+      .replace(".", "")
+      .toLocaleUpperCase("it-IT"),
+    time: new Intl.DateTimeFormat("it-IT", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Europe/Rome",
+    }).format(startsAt),
+  }
 }
 
 export function EventCardSkeleton({ className }: { className?: string }) {
@@ -37,7 +71,7 @@ export function EventCardSkeleton({ className }: { className?: string }) {
       aria-busy="true"
       aria-label="Caricamento evento"
       className={cn(
-        "grid min-h-80 overflow-hidden rounded-3xl bg-surface-1 sm:grid-cols-[0.88fr_1.12fr]",
+        "grid min-h-80 overflow-hidden rounded-xl bg-surface-1 sm:grid-cols-[0.88fr_1.12fr]",
         className
       )}
     >
@@ -65,6 +99,7 @@ export function EventCard({
   }
 
   const isSoldOut = event.availableSlots <= 0
+  const schedule = formatSchedule(event)
   const isAlmostFull =
     !isSoldOut && event.availableSlots <= Math.ceil(event.totalSlots * 0.2)
   const statusLabel = isSoldOut
@@ -79,7 +114,7 @@ export function EventCard({
   return (
     <article
       className={cn(
-        "group/event grid min-h-80 overflow-hidden rounded-3xl bg-surface-1 ring-1 ring-white/10 transition-transform duration-500 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgb(0_0_0_/_0.34)] motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[0.88fr_1.12fr]",
+        "group/event grid min-h-80 overflow-hidden rounded-xl bg-surface-1 ring-1 ring-white/10 transition-transform duration-500 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgb(0_0_0_/_0.34)] motion-reduce:transform-none motion-reduce:transition-none sm:grid-cols-[0.88fr_1.12fr]",
         className
       )}
     >
@@ -99,6 +134,10 @@ export function EventCard({
           aria-hidden="true"
           className="absolute inset-0 bg-[linear-gradient(145deg,rgb(70_88_173_/_0.12),transparent_42%),linear-gradient(to_top,rgb(8_9_13_/_0.88),transparent_68%)]"
         />
+        <div
+          aria-hidden="true"
+          className="absolute inset-y-0 left-0 w-1 bg-offtime-violet"
+        />
         <div className="absolute right-5 bottom-5 left-5 flex items-end justify-between gap-4">
           <p
             className="font-mono text-xs font-bold tracking-[0.14em] text-white uppercase"
@@ -106,15 +145,17 @@ export function EventCard({
           >
             {event.game}
           </p>
-          <span
+          <Badge
+            variant="outline"
             className={cn(
-              "rounded-full bg-background/85 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md",
-              isAlmostFull && "bg-offtime-pink text-background",
+              "h-auto border-border bg-background/85 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md",
+              isAlmostFull &&
+                "border-offtime-pink/60 bg-release text-release-foreground",
               isSoldOut && "bg-surface-3 text-muted-foreground"
             )}
           >
             {statusLabel}
-          </span>
+          </Badge>
         </div>
       </div>
 
@@ -126,10 +167,10 @@ export function EventCard({
         <div className="mt-7 grid grid-cols-[1fr_auto] gap-5 border-y border-border py-5">
           <div>
             <p className="font-mono text-2xl font-bold tracking-[-0.06em] text-foreground tabular-nums">
-              {event.date}
+              {schedule.date}
             </p>
-            <p className="text-offtime-pink-bright mt-1 font-mono text-sm font-semibold tabular-nums">
-              {event.time}
+            <p className="mt-1 font-mono text-sm font-semibold text-offtime-pink-bright tabular-nums">
+              {schedule.time}
             </p>
           </div>
           <div className="text-right">
