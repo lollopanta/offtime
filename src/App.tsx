@@ -25,6 +25,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
+import { CategoryTile, type Category } from "@/components/offtime/category-tile"
+import { EventCard, type Event } from "@/components/offtime/event-card"
 import { ProductCard } from "@/components/offtime/product-card"
 import { temporaryProducts } from "@/components/offtime/product-data"
 import { SiteHeader } from "@/components/offtime/site-header"
@@ -68,6 +70,86 @@ const scrubWords = "Built for a vivid, deliberate shopping experience.".split(
   " "
 )
 
+const categories: Category[] = [
+  {
+    name: "Pokémon",
+    image: "https://picsum.photos/seed/offtime-category-pokemon/900/1200",
+    href: "/shop/pokemon",
+  },
+  {
+    name: "One Piece",
+    image: "https://picsum.photos/seed/offtime-category-one-piece/900/1200",
+    href: "/shop/one-piece",
+  },
+  {
+    name: "Yu-Gi-Oh!",
+    image: "https://picsum.photos/seed/offtime-category-yugioh/900/1200",
+    href: "/shop/yu-gi-oh",
+  },
+  {
+    name: "Magic: The Gathering",
+    image: "https://picsum.photos/seed/offtime-category-magic/900/1200",
+    href: "/shop/magic-the-gathering",
+  },
+  {
+    name: "Lorcana",
+    image: "https://picsum.photos/seed/offtime-category-lorcana/900/1200",
+    href: "/shop/lorcana",
+  },
+  {
+    name: "Altri TCG",
+    image: "https://picsum.photos/seed/offtime-category-tcg/900/1200",
+    href: "/shop/altri-tcg",
+  },
+]
+
+const events: Event[] = [
+  {
+    game: "One Piece",
+    name: "Store Tournament",
+    date: "05 SET",
+    time: "15:00",
+    availableSlots: 24,
+    totalSlots: 32,
+    price: 10,
+    image: "https://picsum.photos/seed/offtime-event-one-piece/720/900",
+    href: "/eventi/one-piece-store-tournament",
+  },
+  {
+    game: "Pokémon",
+    name: "Lega del sabato",
+    date: "12 SET",
+    time: "10:30",
+    availableSlots: 12,
+    totalSlots: 24,
+    price: 0,
+    image: "https://picsum.photos/seed/offtime-event-pokemon/720/900",
+    href: "/eventi/lega-pokemon",
+  },
+  {
+    game: "Yu-Gi-Oh!",
+    name: "OTS Championship",
+    date: "19 SET",
+    time: "14:30",
+    availableSlots: 3,
+    totalSlots: 24,
+    price: 7.5,
+    image: "https://picsum.photos/seed/offtime-event-yugioh/720/900",
+    href: "/eventi/ots-championship",
+  },
+  {
+    game: "Magic: The Gathering",
+    name: "Friday Night Magic",
+    date: "25 SET",
+    time: "20:45",
+    availableSlots: 0,
+    totalSlots: 16,
+    price: 15,
+    image: "https://picsum.photos/seed/offtime-event-magic/720/900",
+    href: "/eventi/friday-night-magic",
+  },
+]
+
 function SectionHeading({
   id,
   eyebrow,
@@ -84,7 +166,7 @@ function SectionHeading({
       <p className="offtime-kicker">{eyebrow}</p>
       <h2
         id={id}
-        className="offtime-display scroll-mt-8 text-3xl text-foreground sm:text-4xl"
+        className="offtime-display scroll-mt-8 text-xl text-foreground sm:text-4xl"
       >
         {title}
       </h2>
@@ -395,7 +477,7 @@ function DesignSystemPage() {
               <div className="flex flex-col divide-y divide-border">
                 <div className="p-6 sm:p-8">
                   <p className="offtime-kicker">Headings</p>
-                  <h2 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-foreground">
+                  <h2 className="mt-4 text-xl font-semibold tracking-[-0.045em] text-foreground">
                     H2 brings the focus.
                   </h2>
                   <h3 className="mt-5 text-xl font-semibold tracking-[-0.025em] text-foreground">
@@ -651,7 +733,7 @@ function DesignSystemPage() {
 
           <p
             data-scrub-copy
-            className="offtime-display mt-20 max-w-5xl text-3xl leading-[1.02] text-foreground sm:mt-28 sm:text-5xl"
+            className="offtime-display mt-20 max-w-5xl text-xl leading-[1.02] text-foreground sm:mt-28 sm:text-5xl"
           >
             {scrubWords.map((word, index) => (
               <span
@@ -669,7 +751,7 @@ function DesignSystemPage() {
       <footer className="border-t border-border bg-surface-1">
         <div className="offtime-container flex flex-col gap-5 py-10 sm:flex-row sm:items-end sm:justify-between sm:py-14">
           <div>
-            <p className="offtime-display text-3xl text-foreground">
+            <p className="offtime-display text-xl text-foreground">
               Ready to build with intent.
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -736,7 +818,7 @@ function StorefrontPage() {
 
       <main className="w-full max-w-full overflow-x-hidden">
         <section className="offtime-container grid items-center gap-10 py-20 sm:py-28 lg:grid-cols-[1.05fr_0.95fr] lg:py-36">
-          <div className="flex max-w-3xl flex-col items-start gap-7">
+          <div className="flex max-w-xl flex-col items-start gap-7">
             <p data-storefront-hero className="offtime-kicker">
               Carte che restano
             </p>
@@ -799,6 +881,28 @@ function StorefrontPage() {
         </section>
 
         <section
+          id="categorie"
+          aria-labelledby="categorie-title"
+          className="offtime-container py-20 sm:py-28"
+        >
+          <div className="max-w-3xl">
+            <p className="offtime-kicker">Scegli il tuo gioco</p>
+            <h2
+              id="categorie-title"
+              className="offtime-display mt-3 scroll-mt-28 text-4xl text-balance text-foreground sm:text-5xl"
+            >
+              Sei mondi, infinite storie da collezionare.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid grid-flow-dense gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.map((category) => (
+              <CategoryTile category={category} key={category.href} />
+            ))}
+          </div>
+        </section>
+
+        <section
           id="catalogo"
           aria-labelledby="catalogo-title"
           className="border-y border-border bg-surface-1 py-20 sm:py-28"
@@ -835,12 +939,39 @@ function StorefrontPage() {
             </div>
           </div>
         </section>
+
+        <section
+          id="eventi"
+          aria-labelledby="eventi-title"
+          className="offtime-container py-20 sm:py-28"
+        >
+          <div className="flex max-w-3xl flex-col gap-4">
+            <p className="offtime-kicker">In negozio</p>
+            <h2
+              id="eventi-title"
+              className="offtime-display scroll-mt-28 text-4xl text-balance text-foreground sm:text-5xl"
+            >
+              Il prossimo match comincia qui.
+            </h2>
+            <p className="max-w-2xl text-base leading-7 text-pretty text-muted-foreground">
+              Tornei, leghe e serate community: scegli il tuo tavolo e prenota
+              il posto prima che finisca.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            {events.map((event) => (
+              <EventCard event={event} key={event.href} />
+            ))}
+            <EventCard className="lg:col-span-2" isLoading />
+          </div>
+        </section>
       </main>
 
       <footer className="bg-background">
         <div className="offtime-container flex flex-col gap-6 py-14 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="offtime-display text-3xl text-foreground">
+            <p className="offtime-display text-xl text-foreground">
               Il tuo prossimo pezzo ti aspetta.
             </p>
             <p className="mt-2 text-sm text-muted-foreground">

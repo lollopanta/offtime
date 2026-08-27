@@ -71,6 +71,7 @@ type ProductSearchProps = {
   autoFocus?: boolean
   className?: string
   compact?: boolean
+  contentSideOffset?: number
   onDismiss?: () => void
   searchHref: string
 }
@@ -79,6 +80,7 @@ function ProductSearch({
   autoFocus = false,
   className,
   compact = false,
+  contentSideOffset,
   onDismiss,
   searchHref,
 }: ProductSearchProps) {
@@ -90,7 +92,7 @@ function ProductSearch({
           autoComplete="off"
           autoFocus={autoFocus}
           className={cn(
-            "w-full bg-surface-2/85 shadow-none hover:border-border-strong",
+            "w-full bg-background shadow-none hover:border-border-strong dark:bg-input/0",
             compact ? "md:h-11" : "md:h-12"
           )}
           name="q"
@@ -122,7 +124,10 @@ function ProductSearch({
             </InputGroupButton>
           </InputGroupAddon>
         </ComboboxInput>
-        <ComboboxContent className="border border-border bg-popover shadow-[0_18px_55px_rgb(0_0_0_/_0.35)]">
+        <ComboboxContent
+          className="border border-border bg-popover shadow-[0_18px_55px_rgb(0_0_0_/_0.35)]"
+          sideOffset={contentSideOffset}
+        >
           <ComboboxEmpty>Nessun prodotto trovato.</ComboboxEmpty>
           <ComboboxList>
             {(item) => (
@@ -379,6 +384,7 @@ export function SiteHeader({
                 >
                   <ProductSearch
                     compact
+                    contentSideOffset={28}
                     onDismiss={closeNavbarSearch}
                     searchHref={searchHref}
                   />
