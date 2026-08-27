@@ -29,7 +29,7 @@ export const campaigns: Campaign[] = [
       "Blocca il tuo display prima dell’uscita e preparati al prossimo capitolo del Grand Line.",
     ctaLabel: "Preordina OP-17",
     href: "/preordini/op-17",
-    image: "https://placehold.co/1600x1000/12182b/f7f7fa?text=OP-17%0APREORDER",
+    image: "https://dnacards.it/wp-content/uploads/2026/08/op17-jp-desk.webp",
     imageAlt: "Artwork temporaneo per il preorder One Piece OP-17",
     tone: "blue",
   },
@@ -152,7 +152,7 @@ export const homeEvents: Event[] = [
     availableSlots: 24,
     totalSlots: 32,
     price: 10,
-    image: "https://placehold.co/720x900/172044/f7f7fa?text=ONE%20PIECE",
+    image: "https://www.tcgplayer.it/public/Images/8CH4qs28b8BEc9uaDkB21A%3d%3d/images/2025/OTTOBRE/banner_store_tournament_2025_vol4_op.jpg",
     href: "/eventi/one-piece-store-tournament",
   },
   {
