@@ -1,0 +1,31 @@
+{
+  "extends": ["ultracite/biome/core", "ultracite/biome/react"],
+  "linter": {
+    "rules": {
+      "performance": {
+        "noJsxPropsBind": "off",
+        "noNamespaceImport": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noLabelWithoutControl": "off",
+            "noNoninteractiveElementInteractions": "off",
+            "useFocusableInteractive": "off",
+            "useKeyWithClickEvents": "off",
+            "useSemanticElements": "off"
+          },
+          "suspicious": {
+            "noLeakedRender": "off"
+          }
+        }
+      }
+    }
+  ],
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json"
+}

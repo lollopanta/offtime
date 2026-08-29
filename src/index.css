@@ -63,9 +63,6 @@
 }
 
 :root {
-  color-scheme: dark;
-
-  /* Brand — sampled from the OFFTIME mark. */
   --offtime-blue: #4658ad;
   --offtime-blue-bright: #7185ff;
   --offtime-pink: #ef75aa;
@@ -150,6 +147,7 @@
   --sidebar-accent-foreground: var(--text-primary);
   --sidebar-border: var(--border-subtle);
   --sidebar-ring: var(--offtime-blue-bright);
+  color-scheme: dark;
 }
 
 @layer base {
@@ -169,11 +167,11 @@
   }
 
   body {
-    @apply bg-background text-foreground;
     min-width: 20rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
+    @apply bg-background text-foreground;
   }
 
   button:not(:disabled),
@@ -182,8 +180,8 @@
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--offtime-pink) 60%, transparent);
     color: var(--text-primary);
+    background: color-mix(in srgb, var(--offtime-pink) 60%, transparent);
   }
 
   :focus-visible {
@@ -199,13 +197,13 @@
   }
 
   .offtime-kicker {
-    color: var(--offtime-pink-bright);
     font-family: var(--font-offtime-mono);
     font-size: 0.6875rem;
     font-weight: 650;
-    letter-spacing: 0.12em;
     line-height: 1.25;
+    color: var(--offtime-pink-bright);
     text-transform: uppercase;
+    letter-spacing: 0.12em;
   }
 
   .offtime-display {

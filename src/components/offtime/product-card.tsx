@@ -1,20 +1,21 @@
-import * as React from "react"
-import { CheckIcon, HeartIcon, ShoppingBagIcon } from "lucide-react"
+import { CheckIcon, HeartIcon, ShoppingBagIcon } from "lucide-react";
+import * as React from "react";
+import { Link } from "react-router-dom";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
-import type { Product, ProductStatus } from "@/components/offtime/product-data"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Product, ProductStatus } from "@/domain/catalog";
+import { productPath } from "@/domain/catalog";
+import { useCart } from "@/features/cart/cart-context";
+import { cn } from "@/lib/utils";
 
-export type { Product, ProductStatus } from "@/components/offtime/product-data"
-
-export type ProductCardProps = {
-  className?: string
-  isLoading?: boolean
-  onAddToCart?: (product: Product) => void
-  onWishlistChange?: (product: Product, isWishlisted: boolean) => void
-  product?: Product
+export interface ProductCardProps {
+  className?: string;
+  isLoading?: boolean;
+  onAddToCart?: (product: Product) => void;
+  onWishlistChange?: (product: Product, isWishlisted: boolean) => void;
+  product?: Product;
 }
 
 const statusLabel: Record<ProductStatus, string> = {
@@ -22,15 +23,15 @@ const statusLabel: Record<ProductStatus, string> = {
   preorder: "Preordine",
   sale: "In saldo",
   "sold-out": "Esaurito",
-}
+};
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("it-IT", {
-    style: "currency",
     currency: "EUR",
-    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(price)
+    minimumFractionDigits: 2,
+    style: "currency",
+  }).format(price);
 }
 
 export function ProductCardSkeleton({ className }: { className?: string }) {
@@ -54,7 +55,7 @@ export function ProductCardSkeleton({ className }: { className?: string }) {
         </div>
       </div>
     </article>
-  )
+  );
 }
 
 export function ProductCard({
@@ -64,30 +65,42 @@ export function ProductCard({
   onWishlistChange,
   product,
 }: ProductCardProps) {
-  const [isWishlisted, setIsWishlisted] = React.useState(false)
-  const [isAdded, setIsAdded] = React.useState(false)
+  const { addProduct } = useCart();
+  const [isWishlisted, setIsWishlisted] = React.useState(false);
+  const [isAdded, setIsAdded] = React.useState(false);
 
   if (isLoading || !product) {
-    return <ProductCardSkeleton className={className} />
+    return <ProductCardSkeleton className={className} />;
   }
 
-  const isSoldOut = product.status === "sold-out"
-  const productHref =
-    product.href ??
-    `/prodotto/${encodeURIComponent(`${product.game}-${product.name}`.toLowerCase())}`
+  const isSoldOut = product.status === "sold-out";
+  const productHref = productPath(product);
+  let addButtonLabel = "Aggiungi al carrello";
+  if (isSoldOut) {
+    addButtonLabel = "Esaurito";
+  } else if (isAdded) {
+    addButtonLabel = "Aggiunto";
+  }
+  const AddButtonIcon = isAdded ? CheckIcon : ShoppingBagIcon;
 
   const handleAddToCart = () => {
-    if (isSoldOut) return
+    if (isSoldOut) {
+      return;
+    }
 
-    setIsAdded(true)
-    onAddToCart?.(product)
-  }
+    setIsAdded(true);
+    if (onAddToCart) {
+      onAddToCart(product);
+    } else {
+      addProduct(product);
+    }
+  };
 
   const handleWishlist = () => {
-    const nextValue = !isWishlisted
-    setIsWishlisted(nextValue)
-    onWishlistChange?.(product, nextValue)
-  }
+    const nextValue = !isWishlisted;
+    setIsWishlisted(nextValue);
+    onWishlistChange?.(product, nextValue);
+  };
 
   return (
     <article
@@ -96,13 +109,13 @@ export function ProductCard({
         className
       )}
     >
-      <a
+      <Link
         aria-label={`Guarda ${product.name}`}
         className="relative block aspect-[4/5] overflow-hidden bg-surface-2"
-        href={productHref}
+        to={productHref}
       >
         <img
-          alt={product.imageAlt ?? `${product.name}, ${product.language}`}
+          alt={product.imageAlt}
           className={cn(
             "size-full origin-center scale-[1.04] object-cover object-center transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/product-card:scale-100 motion-reduce:scale-100 motion-reduce:transition-none",
             isSoldOut && "opacity-60 grayscale"
@@ -118,7 +131,6 @@ export function ProductCard({
         />
         <div className="absolute top-3 left-3">
           <Badge
-            variant={product.status === "preorder" ? "default" : "outline"}
             className={cn(
               "border-border bg-background/85 text-foreground backdrop-blur-sm",
               product.status === "preorder" &&
@@ -127,38 +139,39 @@ export function ProductCard({
                 "border-offtime-pink/60 bg-release text-release-foreground",
               isSoldOut && "bg-surface-3 text-muted-foreground"
             )}
+            variant={product.status === "preorder" ? "default" : "outline"}
           >
             {statusLabel[product.status]}
           </Badge>
         </div>
-      </a>
+      </Link>
 
       <div className="flex flex-col gap-3 p-5">
         <p
-          className="font-mono text-[0.6875rem] font-semibold tracking-[0.1em] text-offtime-pink-bright uppercase"
+          className="font-mono font-semibold text-[0.6875rem] text-offtime-pink-bright uppercase tracking-[0.1em]"
           translate="no"
         >
           {product.game}
         </p>
         <div className="min-w-0">
-          <h3 className="truncate text-base font-semibold tracking-[-0.025em] text-foreground">
-            <a
+          <h3 className="truncate font-semibold text-base text-foreground tracking-[-0.025em]">
+            <Link
               className="rounded-sm transition-colors hover:text-primary"
-              href={productHref}
+              to={productHref}
             >
               {product.name}
-            </a>
+            </Link>
           </h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">
+          <p className="mt-1 truncate text-muted-foreground text-sm">
             {product.type} · {product.language}
           </p>
         </div>
         <div className="flex min-h-7 items-end gap-2">
-          <p className="text-lg font-semibold tracking-[-0.04em] text-foreground tabular-nums">
+          <p className="font-semibold text-foreground text-lg tabular-nums tracking-[-0.04em]">
             {formatPrice(product.price)}
           </p>
           {product.status === "sale" && product.originalPrice ? (
-            <p className="pb-0.5 text-xs text-muted-foreground tabular-nums line-through">
+            <p className="pb-0.5 text-muted-foreground text-xs tabular-nums line-through">
               {formatPrice(product.originalPrice)}
             </p>
           ) : null}
@@ -170,19 +183,10 @@ export function ProductCard({
             onClick={handleAddToCart}
             variant={isAdded ? "secondary" : "default"}
           >
-            {isSoldOut ? (
-              "Esaurito"
-            ) : isAdded ? (
-              <>
-                <CheckIcon aria-hidden="true" data-icon="inline-start" />
-                Aggiunto
-              </>
-            ) : (
-              <>
-                <ShoppingBagIcon aria-hidden="true" data-icon="inline-start" />
-                Aggiungi al carrello
-              </>
+            {isSoldOut ? null : (
+              <AddButtonIcon aria-hidden="true" data-icon="inline-start" />
             )}
+            {addButtonLabel}
           </Button>
           <Button
             aria-label={
@@ -206,5 +210,5 @@ export function ProductCard({
         </p>
       </div>
     </article>
-  )
+  );
 }

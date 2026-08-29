@@ -1,9 +1,10 @@
-import { ArrowRightIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { EventCard } from "@/components/offtime/event-card";
+import { buttonVariants } from "@/components/ui/button";
+import type { Event } from "@/domain/events";
 
-import { EventCard, type Event } from "@/components/offtime/event-card"
-import { buttonVariants } from "@/components/ui/button"
-
-export function EventsSection({ events }: { events: Event[] }) {
+export function EventsSection({ events }: { events: readonly Event[] }) {
   return (
     <section
       aria-labelledby="events-title"
@@ -14,29 +15,29 @@ export function EventsSection({ events }: { events: Event[] }) {
         <div className="max-w-3xl">
           <p className="offtime-kicker">In negozio</p>
           <h2
-            className="offtime-display mt-3 scroll-mt-28 text-4xl leading-[0.95] text-foreground sm:text-5xl"
+            className="offtime-display mt-3 scroll-mt-28 text-4xl text-foreground leading-[0.95] sm:text-5xl"
             id="events-title"
           >
             Il prossimo match comincia qui.
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-pretty text-muted-foreground">
+          <p className="mt-4 max-w-2xl text-pretty text-base text-muted-foreground leading-7">
             Tornei, leghe e serate community: scegli il tuo tavolo e prenota il
             posto prima che finisca.
           </p>
         </div>
-        <a
-          className={buttonVariants({ variant: "outline", size: "lg" })}
-          href="/eventi"
+        <Link
+          className={buttonVariants({ size: "lg", variant: "outline" })}
+          to="/eventi"
         >
           Tutti gli eventi
           <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
-        </a>
+        </Link>
       </div>
 
       {events.length ? (
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           {events.slice(0, 4).map((event) => (
-            <EventCard event={event} key={event.href ?? event.name} />
+            <EventCard event={event} key={event.id} />
           ))}
         </div>
       ) : (
@@ -45,5 +46,5 @@ export function EventsSection({ events }: { events: Event[] }) {
         </p>
       )}
     </section>
-  )
+  );
 }

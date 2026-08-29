@@ -1,5 +1,6 @@
 packages: []
 
 allowBuilds:
+  code-to-figma: true
   esbuild: true
   msw: false

@@ -1,44 +1,45 @@
-import { ArrowLeftIcon, SearchIcon } from "lucide-react"
+import { ArrowLeftIcon, SearchIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import { EventCard } from "@/components/offtime/event-card"
-import { homeEvents } from "@/components/offtime/home/home-data"
-import { ProductCard } from "@/components/offtime/product-card"
-import { temporaryProducts } from "@/components/offtime/product-data"
-import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { EventCard } from "@/components/offtime/event-card";
+import { ProductCard } from "@/components/offtime/product-card";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
+} from "@/components/ui/input-group";
+import { products } from "@/domain/catalog";
+import { events } from "@/domain/events";
 
 const swatches = [
   ["Primary", "#4658AD", "bg-offtime-blue"],
   ["Focus", "#7185FF", "bg-offtime-blue-bright"],
   ["Release", "#EF75AA", "bg-offtime-pink"],
   ["Editorial", "#8B68D7", "bg-offtime-violet"],
-] as const
+] as const;
 
 export function DesignSystemPage() {
   return (
     <div className="min-h-svh bg-background">
       <a
         className={buttonVariants({
-          variant: "secondary",
-          size: "sm",
           className: "offtime-skip-link",
+          size: "sm",
+          variant: "secondary",
         })}
         href="#content"
       >
         Vai al contenuto
       </a>
 
-      <header className="border-b border-border bg-surface-1">
+      <header className="border-border border-b bg-surface-1">
         <nav
           aria-label="Design system"
           className="offtime-container flex min-h-20 items-center justify-between gap-4"
         >
-          <a aria-label="OFFTIME, home" className="rounded-sm" href="/">
+          <Link aria-label="OFFTIME, home" className="rounded-sm" to="/">
             <img
               alt="OFFTIME"
               className="h-14 w-auto object-contain"
@@ -46,21 +47,21 @@ export function DesignSystemPage() {
               src="/logo.webp"
               width="144"
             />
-          </a>
-          <a className={buttonVariants({ variant: "outline" })} href="/">
+          </Link>
+          <Link className={buttonVariants({ variant: "outline" })} to="/">
             <ArrowLeftIcon aria-hidden="true" data-icon="inline-start" />
             Storefront
-          </a>
+          </Link>
         </nav>
       </header>
 
       <main className="offtime-container py-16 sm:py-24" id="content">
         <div className="max-w-3xl">
           <p className="offtime-kicker">OFFTIME UI foundation</p>
-          <h1 className="offtime-display mt-3 text-5xl leading-[0.92] text-foreground sm:text-7xl">
+          <h1 className="offtime-display mt-3 text-5xl text-foreground leading-[0.92] sm:text-7xl">
             Un sistema TCG riconoscibile e scalabile.
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
+          <p className="mt-5 max-w-2xl text-lg text-muted-foreground leading-8">
             Token, gerarchie e componenti reali usati nello storefront.
           </p>
         </div>
@@ -80,8 +81,8 @@ export function DesignSystemPage() {
                 key={name}
               >
                 <div className={`h-24 rounded-sm ${color}`} />
-                <h3 className="mt-4 text-sm font-semibold">{name}</h3>
-                <p className="mt-1 font-mono text-xs text-muted-foreground">
+                <h3 className="mt-4 font-semibold text-sm">{name}</h3>
+                <p className="mt-1 font-mono text-muted-foreground text-xs">
                   {value}
                 </p>
               </article>
@@ -96,7 +97,7 @@ export function DesignSystemPage() {
                 <div className="size-20 rounded-md border border-offtime-pink bg-release" />
                 <div className="size-24 rounded-xl border border-offtime-violet bg-offtime-violet/15" />
               </div>
-              <p className="mt-4 font-mono text-xs text-muted-foreground">
+              <p className="mt-4 font-mono text-muted-foreground text-xs">
                 8px / 12px / 18px
               </p>
             </article>
@@ -111,7 +112,7 @@ export function DesignSystemPage() {
                 </Badge>
               </div>
               <label
-                className="mt-6 block text-sm font-medium"
+                className="mt-6 block font-medium text-sm"
                 htmlFor="demo-search"
               >
                 Ricerca catalogo
@@ -141,8 +142,8 @@ export function DesignSystemPage() {
             ProductCard
           </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {temporaryProducts.map((product) => (
-              <ProductCard key={product.href} product={product} />
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </section>
@@ -156,13 +157,13 @@ export function DesignSystemPage() {
             EventCard
           </h2>
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
-            {homeEvents.map((event) => (
-              <EventCard event={event} key={event.href} />
+            {events.map((event) => (
+              <EventCard event={event} key={event.id} />
             ))}
             <EventCard className="lg:col-span-2" isLoading />
           </div>
         </section>
       </main>
     </div>
-  )
+  );
 }

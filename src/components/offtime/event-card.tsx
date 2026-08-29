@@ -1,38 +1,28 @@
-import { ArrowRightIcon } from "lucide-react"
+import { ArrowRightIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Event } from "@/domain/events";
+import { cn } from "@/lib/utils";
 
-export type Event = {
-  game: string
-  name: string
-  date?: string
-  time?: string
-  startsAt?: string
-  availableSlots: number
-  totalSlots: number
-  price: number
-  image: string
-  href?: string
-  imageAlt?: string
-}
-
-export type EventCardProps = {
-  className?: string
-  event?: Event
-  isLoading?: boolean
+export interface EventCardProps {
+  className?: string;
+  event?: Event;
+  isLoading?: boolean;
 }
 
 function formatPrice(price: number) {
-  if (price === 0) return "Gratis"
+  if (price === 0) {
+    return "Gratis";
+  }
 
   return new Intl.NumberFormat("it-IT", {
-    style: "currency",
     currency: "EUR",
     maximumFractionDigits: 2,
-  }).format(price)
+    style: "currency",
+  }).format(price);
 }
 
 function formatSchedule(event: Event) {
@@ -40,12 +30,12 @@ function formatSchedule(event: Event) {
     return {
       date: event.date?.trim() || "DA DEFINIRE",
       time: event.time?.trim() || "—",
-    }
+    };
   }
 
-  const startsAt = new Date(event.startsAt)
+  const startsAt = new Date(event.startsAt);
   if (Number.isNaN(startsAt.getTime())) {
-    return { date: "DA DEFINIRE", time: "—" }
+    return { date: "DA DEFINIRE", time: "—" };
   }
 
   return {
@@ -62,7 +52,7 @@ function formatSchedule(event: Event) {
       minute: "2-digit",
       timeZone: "Europe/Rome",
     }).format(startsAt),
-  }
+  };
 }
 
 export function EventCardSkeleton({ className }: { className?: string }) {
@@ -86,7 +76,7 @@ export function EventCardSkeleton({ className }: { className?: string }) {
         <Skeleton className="h-11 w-full bg-surface-2 motion-reduce:animate-none" />
       </div>
     </article>
-  )
+  );
 }
 
 export function EventCard({
@@ -95,21 +85,20 @@ export function EventCard({
   isLoading = false,
 }: EventCardProps) {
   if (isLoading || !event) {
-    return <EventCardSkeleton className={className} />
+    return <EventCardSkeleton className={className} />;
   }
 
-  const isSoldOut = event.availableSlots <= 0
-  const schedule = formatSchedule(event)
+  const isSoldOut = event.availableSlots <= 0;
+  const schedule = formatSchedule(event);
   const isAlmostFull =
-    !isSoldOut && event.availableSlots <= Math.ceil(event.totalSlots * 0.2)
-  const statusLabel = isSoldOut
-    ? "Sold out"
-    : isAlmostFull
-      ? "Quasi completo"
-      : "Posti disponibili"
-  const eventHref =
-    event.href ??
-    `/eventi/${encodeURIComponent(`${event.game}-${event.name}`.toLowerCase())}`
+    !isSoldOut && event.availableSlots <= Math.ceil(event.totalSlots * 0.2);
+  let statusLabel = "Posti disponibili";
+  if (isSoldOut) {
+    statusLabel = "Sold out";
+  } else if (isAlmostFull) {
+    statusLabel = "Quasi completo";
+  }
+  const eventHref = event.href;
 
   return (
     <article
@@ -140,19 +129,19 @@ export function EventCard({
         />
         <div className="absolute right-5 bottom-5 left-5 flex items-end justify-between gap-4">
           <p
-            className="font-mono text-xs font-bold tracking-[0.14em] text-white uppercase"
+            className="font-bold font-mono text-white text-xs uppercase tracking-[0.14em]"
             translate="no"
           >
             {event.game}
           </p>
           <Badge
-            variant="outline"
             className={cn(
-              "h-auto border-border bg-background/85 px-3 py-1.5 text-xs font-semibold text-foreground backdrop-blur-md",
+              "h-auto border-border bg-background/85 px-3 py-1.5 font-semibold text-foreground text-xs backdrop-blur-md",
               isAlmostFull &&
                 "border-offtime-pink/60 bg-release text-release-foreground",
               isSoldOut && "bg-surface-3 text-muted-foreground"
             )}
+            variant="outline"
           >
             {statusLabel}
           </Badge>
@@ -160,24 +149,24 @@ export function EventCard({
       </div>
 
       <div className="flex min-w-0 flex-col p-6 sm:p-7">
-        <h3 className="offtime-display text-3xl leading-[0.95] text-balance text-foreground sm:text-4xl">
+        <h3 className="offtime-display text-balance text-3xl text-foreground leading-[0.95] sm:text-4xl">
           {event.name}
         </h3>
 
-        <div className="mt-7 grid grid-cols-[1fr_auto] gap-5 border-y border-border py-5">
+        <div className="mt-7 grid grid-cols-[1fr_auto] gap-5 border-border border-y py-5">
           <div>
-            <p className="font-mono text-2xl font-bold tracking-[-0.06em] text-foreground tabular-nums">
+            <p className="font-bold font-mono text-2xl text-foreground tabular-nums tracking-[-0.06em]">
               {schedule.date}
             </p>
-            <p className="mt-1 font-mono text-sm font-semibold text-offtime-pink-bright tabular-nums">
+            <p className="mt-1 font-mono font-semibold text-offtime-pink-bright text-sm tabular-nums">
               {schedule.time}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-semibold tracking-[-0.05em] text-foreground tabular-nums">
+            <p className="font-semibold text-2xl text-foreground tabular-nums tracking-[-0.05em]">
               {formatPrice(event.price)}
             </p>
-            <p className="mt-1 text-sm text-muted-foreground tabular-nums">
+            <p className="mt-1 text-muted-foreground text-sm tabular-nums">
               {Math.max(0, event.availableSlots)} / {event.totalSlots} posti
             </p>
           </div>
@@ -189,19 +178,19 @@ export function EventCard({
               Posti esauriti
             </Button>
           ) : (
-            <a
+            <Link
               className={buttonVariants({
                 className: "w-full",
                 size: "lg",
               })}
-              href={eventHref}
+              to={eventHref}
             >
               Iscriviti
               <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
-            </a>
+            </Link>
           )}
         </div>
       </div>
     </article>
-  )
+  );
 }

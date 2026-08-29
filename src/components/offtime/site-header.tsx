@@ -1,4 +1,3 @@
-import * as React from "react"
 import {
   HeartIcon,
   MenuIcon,
@@ -6,8 +5,11 @@ import {
   ShoppingBagIcon,
   UserRoundIcon,
   XIcon,
-} from "lucide-react"
-
+} from "lucide-react";
+import * as React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { CartDrawer } from "@/components/offtime/cart-drawer";
+import { Button } from "@/components/ui/button";
 import {
   Combobox,
   ComboboxContent,
@@ -15,7 +17,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from "@/components/ui/combobox"
+} from "@/components/ui/combobox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,8 +25,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group"
+} from "@/components/ui/dropdown-menu";
+import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -33,7 +35,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 import {
   Sheet,
   SheetContent,
@@ -41,23 +43,22 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 const navigation = [
-  { label: "Shop", href: "/shop" },
-  { label: "Preordini", href: "/preordini" },
-  { label: "Eventi", href: "/eventi" },
-  { label: "Vendi le tue carte", href: "/vendi" },
-  { label: "Community", href: "/community" },
-] as const
+  { href: "/shop", label: "Shop" },
+  { href: "/preordini", label: "Preordini" },
+  { href: "/eventi", label: "Eventi" },
+  { href: "/vendi", label: "Vendi le tue carte" },
+  { href: "/community", label: "Community" },
+] as const;
 
 const searchSuggestions = [
   "One Piece OP-10 Booster Box",
@@ -65,15 +66,15 @@ const searchSuggestions = [
   "Magic: The Gathering Final Fantasy",
   "Disney Lorcana",
   "Carte singole in evidenza",
-] as const
+] as const;
 
-type ProductSearchProps = {
-  autoFocus?: boolean
-  className?: string
-  compact?: boolean
-  contentSideOffset?: number
-  onDismiss?: () => void
-  searchHref: string
+interface ProductSearchProps {
+  autoFocus?: boolean;
+  className?: string;
+  compact?: boolean;
+  contentSideOffset?: number;
+  onDismiss?: () => void;
+  searchHref: string;
 }
 
 function ProductSearch({
@@ -84,8 +85,20 @@ function ProductSearch({
   onDismiss,
   searchHref,
 }: ProductSearchProps) {
+  const navigate = useNavigate();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = new FormData(event.currentTarget).get("q");
+    const params = new URLSearchParams();
+    if (typeof query === "string" && query.trim()) {
+      params.set("q", query.trim());
+    }
+    navigate(`${searchHref}${params.size ? `?${params.toString()}` : ""}`);
+  };
+
   return (
-    <form action={searchHref} className={cn("w-full", className)} method="get">
+    <form className={cn("w-full", className)} onSubmit={handleSubmit}>
       <Combobox items={searchSuggestions}>
         <ComboboxInput
           aria-label="Cerca prodotti"
@@ -140,31 +153,31 @@ function ProductSearch({
         </ComboboxContent>
       </Combobox>
     </form>
-  )
+  );
 }
 
-const navbarIconClass = "size-11 [&_svg]:size-4"
+const navbarIconClass = "size-11 [&_svg]:size-4";
 
 function HeaderIconButton({
   label,
   children,
   href,
 }: {
-  label: string
-  children: React.ReactNode
-  href: string
+  label: string;
+  children: React.ReactNode;
+  href: string;
 }) {
   return (
     <Tooltip>
       <TooltipTrigger
         render={
-          <a
+          <Link
             aria-label={label}
             className={cn(
               "inline-flex items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-primary-hover",
               navbarIconClass
             )}
-            href={href}
+            to={href}
           />
         }
       >
@@ -172,7 +185,7 @@ function HeaderIconButton({
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>
-  )
+  );
 }
 
 function MobileNavigation({ searchHref }: { searchHref: string }) {
@@ -194,7 +207,7 @@ function MobileNavigation({ searchHref }: { searchHref: string }) {
         className="w-[min(88vw,23rem)] border-border bg-background p-0"
         side="left"
       >
-        <SheetHeader className="border-b border-border px-6 py-6">
+        <SheetHeader className="border-border border-b px-6 py-6">
           <SheetTitle className="offtime-display text-2xl">
             Esplora OFFTIME
           </SheetTitle>
@@ -208,138 +221,137 @@ function MobileNavigation({ searchHref }: { searchHref: string }) {
             <ul className="flex flex-col gap-1">
               {navigation.map((item) => (
                 <li key={item.href}>
-                  <a
-                    className="flex min-h-11 items-center rounded-sm px-3 text-lg font-medium tracking-[-0.03em] transition-colors hover:bg-accent hover:text-primary-hover"
-                    href={item.href}
+                  <Link
+                    className="flex min-h-11 items-center rounded-sm px-3 font-medium text-lg tracking-[-0.03em] transition-colors hover:bg-accent hover:text-primary-hover"
+                    to={item.href}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </nav>
         </div>
-        <div className="grid grid-cols-2 gap-3 border-t border-border p-6">
-          <a
-            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-primary-hover"
-            href="/preferiti"
+        <div className="grid grid-cols-2 gap-3 border-border border-t p-6">
+          <Link
+            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 font-medium text-foreground text-sm transition-colors hover:bg-accent hover:text-primary-hover"
+            to="/preferiti"
           >
             <HeartIcon aria-hidden="true" />
             Preferiti
-          </a>
-          <a
-            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-primary-hover"
-            href="/account"
+          </Link>
+          <Link
+            className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-surface-3 px-3 font-medium text-foreground text-sm transition-colors hover:bg-accent hover:text-primary-hover"
+            to="/account"
           >
             <UserRoundIcon aria-hidden="true" />
             Account
-          </a>
+          </Link>
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
-export type SiteHeaderProps = {
-  cartCount?: number
-  className?: string
-  searchHref?: string
+export interface SiteHeaderProps {
+  cartCount?: number;
+  className?: string;
+  searchHref?: string;
 }
 
 export function SiteHeader({
   cartCount = 0,
   className,
-  searchHref = "/cerca",
+  searchHref = "/shop",
 }: SiteHeaderProps) {
-  const [navbarSearchMode, setNavbarSearchMode] = React.useState<
-    "mobile" | "desktop" | null
-  >(null)
-  const desktopNavbarSearch = React.useRef<HTMLDivElement>(null)
-  const mobileNavbarSearch = React.useRef<HTMLDivElement>(null)
-  const searchTrigger = React.useRef<HTMLButtonElement>(null)
-  const isNavbarSearchOpen = navbarSearchMode !== null
-  const isMobileNavbarSearchOpen = navbarSearchMode === "mobile"
+  const [isNavbarSearchOpen, setIsNavbarSearchOpen] = React.useState(false);
+  const desktopNavbarSearch = React.useRef<HTMLDivElement>(null);
+  const mobileNavbarSearch = React.useRef<HTMLDivElement>(null);
+  const searchTrigger = React.useRef<HTMLButtonElement>(null);
 
   const closeNavbarSearch = React.useCallback(() => {
-    setNavbarSearchMode(null)
+    setIsNavbarSearchOpen(false);
 
     window.requestAnimationFrame(() => {
-      searchTrigger.current?.focus()
-    })
-  }, [])
+      searchTrigger.current?.focus();
+    });
+  }, []);
 
   React.useEffect(() => {
-    if (!isNavbarSearchOpen) return
+    if (!isNavbarSearchOpen) {
+      return;
+    }
 
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeNavbarSearch();
+      }
+    };
     const closeOnOutsidePointer = (event: PointerEvent) => {
-      const target = event.target as Node
+      const target = event.target as Node;
       const isInsideSearch =
         desktopNavbarSearch.current?.contains(target) ||
         mobileNavbarSearch.current?.contains(target) ||
         searchTrigger.current?.contains(target) ||
         (target instanceof Element &&
-          target.closest('[data-slot="combobox-content"]'))
+          target.closest('[data-slot="combobox-content"]'));
 
-      if (!isInsideSearch) closeNavbarSearch()
-    }
+      if (!isInsideSearch) {
+        closeNavbarSearch();
+      }
+    };
 
-    document.addEventListener("pointerdown", closeOnOutsidePointer)
-    return () =>
-      document.removeEventListener("pointerdown", closeOnOutsidePointer)
-  }, [closeNavbarSearch, isNavbarSearchOpen])
+    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+    };
+  }, [closeNavbarSearch, isNavbarSearchOpen]);
 
   const openNavbarSearch = () => {
-    const mode = window.matchMedia("(min-width: 80rem)").matches
-      ? "desktop"
-      : "mobile"
-    setNavbarSearchMode(mode)
+    setIsNavbarSearchOpen(true);
 
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        const search =
-          mode === "desktop" ? desktopNavbarSearch : mobileNavbarSearch
-        search.current?.querySelector("input")?.focus()
-      })
-    })
-  }
+        const search = desktopNavbarSearch.current?.offsetParent
+          ? desktopNavbarSearch
+          : mobileNavbarSearch;
+        search.current?.querySelector("input")?.focus();
+      });
+    });
+  };
 
   return (
     <TooltipProvider delay={450}>
       <header
         className={cn(
-          "sticky top-0 z-40 border-b border-border bg-background/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl",
+          "sticky top-0 z-40 border-border border-b bg-background/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl",
           className
         )}
       >
         <div className="offtime-container">
-          <div
-            className="grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 xl:gap-5 xl:py-3"
-            onKeyDown={(event) => {
-              if (event.key === "Escape" && isNavbarSearchOpen) {
-                closeNavbarSearch()
-              }
-            }}
-          >
+          <div className="grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 py-2 xl:gap-5 xl:py-3">
             <div
-              aria-hidden={isMobileNavbarSearchOpen}
+              aria-hidden={isNavbarSearchOpen}
               className={cn(
                 "flex items-center transition-opacity duration-150 motion-reduce:transition-none xl:hidden",
-                isMobileNavbarSearchOpen && "pointer-events-none opacity-0"
+                isNavbarSearchOpen && "pointer-events-none opacity-0"
               )}
-              inert={isMobileNavbarSearchOpen}
+              inert={isNavbarSearchOpen}
             >
               <MobileNavigation searchHref={searchHref} />
             </div>
 
-            <a
-              aria-hidden={isMobileNavbarSearchOpen}
+            <Link
+              aria-hidden={isNavbarSearchOpen}
               aria-label="OFFTIME, home"
               className={cn(
                 "flex min-w-0 items-center justify-center rounded-sm transition-opacity duration-150 motion-reduce:transition-none xl:col-start-1 xl:row-start-1 xl:justify-start",
-                isMobileNavbarSearchOpen && "pointer-events-none opacity-0"
+                isNavbarSearchOpen && "pointer-events-none opacity-0"
               )}
-              href="/"
-              inert={isMobileNavbarSearchOpen}
+              inert={isNavbarSearchOpen}
+              to="/"
             >
               <img
                 alt="OFFTIME"
@@ -349,7 +361,7 @@ export function SiteHeader({
                 src="/logo.webp"
                 width="128"
               />
-            </a>
+            </Link>
 
             <NavigationMenu
               aria-hidden={isNavbarSearchOpen}
@@ -368,15 +380,17 @@ export function SiteHeader({
                   <NavigationMenuContent className="w-72 bg-popover">
                     <NavigationMenuLink
                       className="font-medium"
-                      render={<a href="/shop/novita" />}
+                      render={<Link to="/shop?sort=newest" />}
                     >
                       Novità
                     </NavigationMenuLink>
-                    <NavigationMenuLink render={<a href="/shop/box" />}>
+                    <NavigationMenuLink
+                      render={<Link to="/shop?type=Booster+Box" />}
+                    >
                       Booster Box & display
                     </NavigationMenuLink>
                     <NavigationMenuLink
-                      render={<a href="/shop/carte-singole" />}
+                      render={<Link to="/shop?type=Carte+singole" />}
                     >
                       Carte singole
                     </NavigationMenuLink>
@@ -389,7 +403,7 @@ export function SiteHeader({
                         className:
                           "h-11 bg-transparent px-3 text-muted-foreground hover:bg-accent hover:text-primary-hover",
                       })}
-                      render={<a href={item.href} />}
+                      render={<Link to={item.href} />}
                     >
                       {item.label}
                     </NavigationMenuLink>
@@ -399,16 +413,36 @@ export function SiteHeader({
             </NavigationMenu>
 
             <div
-              ref={desktopNavbarSearch}
-              aria-hidden={navbarSearchMode !== "desktop"}
+              aria-hidden={!isNavbarSearchOpen}
               className={cn(
                 "hidden min-w-0 origin-right transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transform-none motion-reduce:transition-opacity xl:col-start-2 xl:row-start-1 xl:block",
-                navbarSearchMode === "desktop"
+                isNavbarSearchOpen
                   ? "xl:scale-x-100 xl:opacity-100"
                   : "pointer-events-none xl:scale-x-[0.12] xl:opacity-0"
               )}
               id="desktop-navbar-product-search"
-              inert={navbarSearchMode !== "desktop"}
+              inert={!isNavbarSearchOpen}
+              ref={desktopNavbarSearch}
+            >
+              <ProductSearch
+                compact
+                contentSideOffset={28}
+                onDismiss={closeNavbarSearch}
+                searchHref={searchHref}
+              />
+            </div>
+
+            <div
+              aria-hidden={!isNavbarSearchOpen}
+              className={cn(
+                "z-10 col-span-full row-start-1 min-w-0 origin-right overflow-hidden rounded-md bg-surface-2 shadow-[0_16px_48px_rgb(0_0_0_/_0.28)] transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform motion-reduce:transform-none motion-reduce:transition-opacity xl:hidden",
+                isNavbarSearchOpen
+                  ? "scale-x-100 opacity-100"
+                  : "pointer-events-none scale-x-[0.12] opacity-0"
+              )}
+              id="mobile-navbar-product-search"
+              inert={!isNavbarSearchOpen}
+              ref={mobileNavbarSearch}
             >
               <ProductSearch
                 compact
@@ -420,27 +454,7 @@ export function SiteHeader({
 
             <div className="flex items-center justify-end gap-0.5 xl:col-start-3 xl:row-start-1">
               <div className="relative h-11 w-11 shrink-0">
-                <div
-                  ref={mobileNavbarSearch}
-                  aria-hidden={navbarSearchMode !== "mobile"}
-                  id="mobile-navbar-product-search"
-                  inert={navbarSearchMode !== "mobile"}
-                  className={cn(
-                    "absolute inset-y-0 right-[-2.875rem] w-[min(calc(100vw-2rem),76rem)] origin-right overflow-hidden rounded-md bg-surface-2 shadow-[0_16px_48px_rgb(0_0_0_/_0.28)] transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] will-change-transform motion-reduce:transform-none motion-reduce:transition-opacity xl:hidden",
-                    navbarSearchMode === "mobile"
-                      ? "scale-x-100 opacity-100"
-                      : "pointer-events-none scale-x-[0.12] opacity-0"
-                  )}
-                >
-                  <ProductSearch
-                    compact
-                    contentSideOffset={28}
-                    onDismiss={closeNavbarSearch}
-                    searchHref={searchHref}
-                  />
-                </div>
                 <Button
-                  ref={searchTrigger}
                   aria-controls="mobile-navbar-product-search desktop-navbar-product-search"
                   aria-expanded={isNavbarSearchOpen}
                   aria-hidden={isNavbarSearchOpen}
@@ -454,6 +468,7 @@ export function SiteHeader({
                   )}
                   inert={isNavbarSearchOpen}
                   onClick={openNavbarSearch}
+                  ref={searchTrigger}
                   size="icon"
                   variant="ghost"
                 >
@@ -462,12 +477,12 @@ export function SiteHeader({
               </div>
 
               <div
-                aria-hidden={isMobileNavbarSearchOpen}
+                aria-hidden={isNavbarSearchOpen}
                 className={cn(
                   "flex items-center gap-0.5 transition-opacity duration-150 motion-reduce:transition-none",
-                  isMobileNavbarSearchOpen && "pointer-events-none opacity-0"
+                  isNavbarSearchOpen && "pointer-events-none opacity-0"
                 )}
-                inert={isMobileNavbarSearchOpen}
+                inert={isNavbarSearchOpen}
               >
                 <div className="hidden items-center gap-0.5 xl:flex">
                   <HeaderIconButton href="/preferiti" label="Preferiti">
@@ -494,13 +509,13 @@ export function SiteHeader({
                     >
                       <DropdownMenuGroup>
                         <DropdownMenuLabel>Il tuo account</DropdownMenuLabel>
-                        <DropdownMenuItem render={<a href="/account" />}>
+                        <DropdownMenuItem render={<Link to="/account" />}>
                           Profilo
                         </DropdownMenuItem>
-                        <DropdownMenuItem render={<a href="/ordini" />}>
+                        <DropdownMenuItem render={<Link to="/ordini" />}>
                           I tuoi ordini
                         </DropdownMenuItem>
-                        <DropdownMenuItem render={<a href="/accesso" />}>
+                        <DropdownMenuItem render={<Link to="/accesso" />}>
                           Accedi
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
@@ -508,30 +523,32 @@ export function SiteHeader({
                   </DropdownMenu>
                 </div>
 
-                <a
-                  aria-label={
-                    cartCount === 1
-                      ? "Carrello, 1 articolo"
-                      : `Carrello, ${cartCount} articoli`
+                <CartDrawer
+                  trigger={
+                    <Button
+                      aria-label={
+                        cartCount === 1
+                          ? "Carrello, 1 articolo"
+                          : `Carrello, ${cartCount} articoli`
+                      }
+                      className={cn("relative", navbarIconClass)}
+                      size="icon"
+                      variant="ghost"
+                    >
+                      <ShoppingBagIcon aria-hidden="true" />
+                      {cartCount > 0 ? (
+                        <span className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-offtime-pink font-bold text-[0.625rem] text-background tabular-nums">
+                          {cartCount > 9 ? "9+" : String(cartCount)}
+                        </span>
+                      ) : null}
+                    </Button>
                   }
-                  className={cn(
-                    "relative inline-flex items-center justify-center rounded-md text-foreground transition-colors hover:bg-accent hover:text-primary-hover",
-                    navbarIconClass
-                  )}
-                  href="/carrello"
-                >
-                  <ShoppingBagIcon aria-hidden="true" />
-                  {cartCount > 0 ? (
-                    <span className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-offtime-pink text-[0.625rem] font-bold text-background tabular-nums">
-                      {cartCount > 9 ? "9+" : cartCount}
-                    </span>
-                  ) : null}
-                </a>
+                />
               </div>
             </div>
           </div>
         </div>
       </header>
     </TooltipProvider>
-  )
+  );
 }
