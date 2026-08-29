@@ -135,7 +135,11 @@ export function HeroCarousel({ campaigns }: { campaigns: Campaign[] }) {
         { autoAlpha: 1, duration: 0.9, ease: "power3.out", scale: 1 }
       );
     },
-    { dependencies: [current, reduceMotion], revertOnUpdate: true, scope: root }
+    {
+      dependencies: [current, reduceMotion],
+      revertOnUpdate: true,
+      scope: root,
+    }
   );
 
   if (!campaigns.length) {

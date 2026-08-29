@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { RouteTitle } from "@/app/route-title";
@@ -10,6 +11,10 @@ import { DestinationPage, EventsPage } from "@/pages/destination-pages";
 import { NotFoundPage } from "@/pages/not-found-page";
 import { ProductPage } from "@/pages/product-page";
 import { StorefrontPage } from "@/pages/storefront";
+
+const LazySellCardsPage = lazy(() =>
+  import("@/pages/sell-cards-page").then((m) => ({ default: m.SellCardsPage }))
+);
 
 export function App() {
   return (
@@ -25,7 +30,14 @@ export function App() {
             <Route element={<CatalogPage preorderOnly />} path="preordini" />
             <Route element={<EventsPage />} path="eventi" />
             <Route element={<EventsPage />} path="eventi/:eventSlug" />
-            <Route element={<DestinationPage kind="vendi" />} path="vendi" />
+            <Route
+              element={
+                <Suspense>
+                  <LazySellCardsPage />
+                </Suspense>
+              }
+              path="vendi"
+            />
             <Route
               element={<DestinationPage kind="community" />}
               path="community"

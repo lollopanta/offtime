@@ -251,6 +251,20 @@
   .offtime-skip-link:focus {
     transform: translateY(0);
   }
+
+  @keyframes offtime-float {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(1.2deg);
+    }
+  }
+
+  .offtime-float {
+    animation: offtime-float 6s ease-in-out infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

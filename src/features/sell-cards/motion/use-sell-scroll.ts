@@ -1,0 +1,75 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import { useEffect, useRef, useState } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Whether the user prefers reduced motion */
+function prefersReducedMotion() {
+  return globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+}
+
+/**
+ * Mount Lenis + GSAP ScrollTrigger for the sell-cards experience.
+ * Returns normalized scroll progress [0..1] over the wrapper element.
+ */
+export function useSellScroll(
+  wrapperRef: React.RefObject<HTMLDivElement | null>
+) {
+  const [progress, setProgress] = useState(0);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) {
+      return;
+    }
+
+    const reduced = prefersReducedMotion();
+
+    // Lenis smooth scroll — skip interpolation for reduced motion
+    let lenis: Lenis | undefined;
+    if (!reduced) {
+      lenis = new Lenis({
+        lerp: 0.08,
+        smoothWheel: true,
+      });
+      lenisRef.current = lenis;
+
+      // Sync Lenis → GSAP
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis?.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    // Master ScrollTrigger over the entire wrapper
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          setProgress(self.progress);
+        },
+        scrub: true,
+        start: "top top",
+        trigger: wrapper,
+      });
+    });
+
+    return () => {
+      ctx.revert();
+      if (lenis) {
+        gsap.ticker.remove((time) => lenis?.raf(time * 1000));
+        lenis.destroy();
+        lenisRef.current = null;
+      }
+      for (const t of ScrollTrigger.getAll()) {
+        t.kill();
+      }
+    };
+  }, [wrapperRef]);
+
+  return { prefersReducedMotion: prefersReducedMotion(), progress };
+}
