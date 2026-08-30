@@ -3,6 +3,7 @@ import { Color } from "three";
 import { useSellScroll } from "./motion/use-sell-scroll";
 import { SellCardsCanvas } from "./scene/sell-cards-canvas";
 import { ChapterSection } from "./sections/chapter-section";
+import { CloudTransition } from "./sections/cloud-transition";
 import { EnvironmentalOverlays } from "./sections/environmental-overlays";
 import { FinalCtaSection } from "./sections/final-cta-section";
 import { IntroSection } from "./sections/intro-section";
@@ -22,11 +23,14 @@ function computeBgColor(progress: number): string {
   const dark = "#08090d";
 
   if (progress < s.charizard[0]) {
-    const t = progress / s.charizard[0];
-    return lerpColorCSS(dark, chapters[0].env.bg, t);
+    return dark;
   }
   if (progress < s.transitionFireShadow[0]) {
-    return chapters[0].env.bg;
+    const t = Math.min(
+      1,
+      (progress - s.charizard[0]) / (s.charizard[1] - s.charizard[0])
+    );
+    return lerpColorCSS(dark, chapters[0].env.bg, Math.min(t * 2.5, 1));
   }
   if (progress < s.transitionFireShadow[1]) {
     const t =
@@ -46,8 +50,8 @@ function computeBgColor(progress: number): string {
   if (progress < s.cta[0]) {
     return chapters[2].env.bg;
   }
-  // Smooth return to dark OFFTIME identity at the start of CTA
-  const t = Math.min(1, (progress - s.cta[0]) / 0.05);
+  // Smooth return to dark OFFTIME identity
+  const t = Math.min(1, (progress - s.cta[0]) / 0.06);
   return lerpColorCSS(chapters[2].env.bg, dark, t);
 }
 
@@ -67,8 +71,8 @@ export function SellCardsExperience() {
   // Check WebGL support once
   const hasWebGL = useMemo(() => {
     try {
-      const canvas = document.createElement("canvas");
-      return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
+      const c = document.createElement("canvas");
+      return !!(c.getContext("webgl2") || c.getContext("webgl"));
     } catch {
       return false;
     }
@@ -78,7 +82,10 @@ export function SellCardsExperience() {
     <div
       className="relative text-foreground"
       ref={wrapperRef}
-      style={{ background: bgColor }}
+      style={{
+        background: bgColor,
+        transition: "background-color 0.4s ease",
+      }}
     >
       {/* Loading overlay */}
       {!canvasReady && hasWebGL && !webglFailed ? (
@@ -107,19 +114,20 @@ export function SellCardsExperience() {
         />
       ) : null}
 
-      {/* 2D Environmental Overlays (SVG Curves, Particle Embers, Mist) */}
+      {/* 2D Environmental Overlays (Fire Embers, Gengar Shadow Aura, Gear 5 Mist) */}
       <EnvironmentalOverlays progress={progress} />
 
+      {/* Authored Cloud Transition Video Overlay (Gengar -> Luffy) */}
+      <CloudTransition progress={progress} reducedMotion={reducedMotion} />
       {/* HTML Story — scrolls naturally over the fixed canvas */}
       <div>
-        {/* Intro */}
-        <IntroSection className="relative min-h-[130svh]" />
+        {/* Intro — OFFTIME Branded Entrance */}
+        <IntroSection className="relative min-h-[120svh]" />
 
         {/* Chapter 1: Charizard (Card on Left, Text on Right) */}
         <ChapterSection
           className="relative min-h-[150svh]"
           eyebrow={chapters[0].eyebrow}
-          highlights={chapters[0].highlights}
           id="charizard"
           layout={chapters[0].layout}
           subtitle={chapters[0].subtitle}
@@ -128,9 +136,7 @@ export function SellCardsExperience() {
 
         {/* Transition Bridge 1: Fire -> Shadow */}
         <StoryBridge
-          align="center"
-          className="relative min-h-[90svh]"
-          kicker="Transizione · Dal Fuoco all'Ombra"
+          className="relative min-h-[85svh]"
           quote="Dai grandi classici vintage ai tesori nascosti nei raccoglitori di una vita intera."
         />
 
@@ -138,7 +144,6 @@ export function SellCardsExperience() {
         <ChapterSection
           className="relative min-h-[150svh]"
           eyebrow={chapters[1].eyebrow}
-          highlights={chapters[1].highlights}
           id="gengar"
           layout={chapters[1].layout}
           subtitle={chapters[1].subtitle}
@@ -147,17 +152,14 @@ export function SellCardsExperience() {
 
         {/* Transition Bridge 2: Shadow -> Cloud */}
         <StoryBridge
-          align="center"
-          className="relative min-h-[90svh]"
-          kicker="Evoluzione · Verso Nuovi Orizzonti"
-          quote="Vendere una carta è dare nuova linfa alla passione: aprire la strada al prossimo pezzo da collezione."
+          className="relative min-h-[85svh]"
+          quote="Vendere una carta è dare nuova linfa alla passione."
         />
 
         {/* Chapter 3: Luffy Gear 5 (Card on Left, Text on Right) */}
         <ChapterSection
           className="relative min-h-[150svh]"
           eyebrow={chapters[2].eyebrow}
-          highlights={chapters[2].highlights}
           id="luffy"
           layout={chapters[2].layout}
           subtitle={chapters[2].subtitle}
@@ -165,7 +167,7 @@ export function SellCardsExperience() {
         />
 
         {/* Final Conversion CTA */}
-        <FinalCtaSection className="relative min-h-[130svh]" />
+        <FinalCtaSection className="relative min-h-[120svh]" />
       </div>
     </div>
   );

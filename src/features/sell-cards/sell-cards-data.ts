@@ -5,11 +5,6 @@ export interface ChapterTextures {
   frontLabel: string;
 }
 
-export interface ChapterHighlight {
-  desc: string;
-  label: string;
-}
-
 export interface Chapter {
   /** Environment color palette */
   env: {
@@ -19,7 +14,6 @@ export interface Chapter {
     ambientIntensity: number;
   };
   eyebrow: string;
-  highlights: ChapterHighlight[];
   id: string;
   layout: "text-right" | "text-left";
   model: string;
@@ -37,21 +31,11 @@ export const chapters: Chapter[] = [
       rimLight: "#e67e22",
     },
     eyebrow: "01 · Fuoco & Icone",
-    highlights: [
-      {
-        desc: "Vintage, prime edizioni e rarità senza tempo.",
-        label: "Pezzi Storici",
-      },
-      {
-        desc: "Valutazione attenta di ogni dettaglio e condizione.",
-        label: "Cura Massima",
-      },
-    ],
     id: "charizard",
     layout: "text-right",
     model: "/models/PSA_Charizard_Textured.glb",
     subtitle:
-      "Le collezioni portano con sé storie, ricordi e pietre miliari del collezionismo. Anche i pezzi storici che riposano nei raccoglitori meritano di trovare un nuovo appassionato pronto a custodirli.",
+      "Le collezioni portano con sé storie, ricordi e pietre miliari del collezionismo. Anche i pezzi storici che riposano nei raccoglitori meritano di trovare un nuovo appassionato.",
     textures: {
       backCard: "/models/charizard_back.jpeg",
       backLabel: "/models/psa_label_back.jpg",
@@ -68,21 +52,11 @@ export const chapters: Chapter[] = [
       rimLight: "#ef75aa",
     },
     eyebrow: "02 · Ombra & Segreti",
-    highlights: [
-      {
-        desc: "Non importa la dimensione: ogni collezione ha una storia.",
-        label: "Binder Interi & Singole",
-      },
-      {
-        desc: "Analisi congiunta senza fretta, al tavolo insieme a noi.",
-        label: "Trasparenza Totale",
-      },
-    ],
     id: "gengar",
     layout: "text-left",
     model: "/models/PSA_Gengar_Textured.glb",
     subtitle:
-      "Singole carte nascoste, binder completi, carte dimenticate nei cassetti: ogni pezzo ha un potenziale da riscoprire. Dalle carte da gioco alle gradate più ricercate, guardiamo insieme cosa rende unica la tua collezione.",
+      "Singole carte nascoste, binder completi, carte dimenticate nei cassetti: ogni pezzo ha un potenziale da riscoprire.",
     textures: {
       backCard: "/models/charizard_back.jpeg",
       backLabel: "/models/psa_label_back.jpg",
@@ -93,27 +67,17 @@ export const chapters: Chapter[] = [
   },
   {
     env: {
-      accent: "#64748b",
-      ambientIntensity: 0.45,
-      bg: "#10141f",
+      accent: "#94a3b8",
+      ambientIntensity: 0.5,
+      bg: "#1a1f2c",
       rimLight: "#e2e8f0",
     },
     eyebrow: "03 · Nuvole & Libertà",
-    highlights: [
-      {
-        desc: "Trasforma carte ferme in nuovi progetti o acquisti.",
-        label: "Nuova Energia",
-      },
-      {
-        desc: "Le tue carte tornano nelle mani di chi le amerà davvero.",
-        label: "Community Reale",
-      },
-    ],
     id: "luffy",
     layout: "text-right",
     model: "/models/PSA_Luffy_Textured.glb",
     subtitle:
-      "Vendere carte non è la fine di una passione, ma l'inizio della prossima avventura: nuovi set, nuovi deck o semplicemente spazio per nuovi obiettivi. Diamo nuovo respiro al tuo percorso da collezionista.",
+      "Vendere carte non è la fine di una passione, ma l'inizio della prossima avventura: nuovi set, nuovi deck o semplicemente spazio per nuovi traguardi.",
     textures: {
       backCard: "/models/one_piece_back.jpg",
       backLabel: "/models/psa_label_back.jpg",
@@ -125,11 +89,11 @@ export const chapters: Chapter[] = [
 ];
 
 export const SCROLL_SECTIONS = {
-  charizard: [0.15, 0.32],
-  cta: [0.86, 1],
-  gengar: [0.42, 0.59],
-  intro: [0, 0.15],
-  luffy: [0.69, 0.86],
-  transitionFireShadow: [0.32, 0.42],
-  transitionShadowCloud: [0.59, 0.69],
+  charizard: [0.12, 0.3],
+  cta: [0.88, 1],
+  gengar: [0.4, 0.58],
+  intro: [0, 0.12],
+  luffy: [0.68, 0.88],
+  transitionFireShadow: [0.3, 0.4],
+  transitionShadowCloud: [0.58, 0.68],
 } as const;

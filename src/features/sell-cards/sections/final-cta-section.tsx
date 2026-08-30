@@ -2,66 +2,55 @@ import { Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
 
 export function FinalCtaSection({ className }: { className?: string }) {
-  const steps = [
-    {
-      desc: "Singole, binder o box interi.",
-      label: "Porta le carte",
-      num: "01",
-    },
-    {
-      desc: "Valutazione aperta e trasparente.",
-      label: "Le guardiamo insieme",
-      num: "02",
-    },
-    {
-      desc: "Decidi liberamente cosa fare.",
-      label: "Scegli il prossimo passo",
-      num: "03",
-    },
-  ];
-
   return (
     <section aria-label="Come funziona" className={className} id="cta">
-      <div className="offtime-container relative z-10 flex min-h-svh flex-col justify-start pt-28 pb-16 sm:justify-center sm:py-0">
-        <div className="w-full max-w-xl rounded-2xl bg-surface-0/40 p-6 backdrop-blur-md sm:bg-transparent sm:p-0 sm:backdrop-blur-none lg:mr-auto lg:ml-0 xl:max-w-2xl">
-          <div className="inline-flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-offtime-pink-bright" />
-            <p className="offtime-kicker">OFFTIME · Valutazione</p>
-          </div>
+      <div className="offtime-container relative z-10 flex min-h-svh flex-col justify-center py-16">
+        <div className="w-full max-w-sm sm:max-w-md lg:max-w-xl xl:max-w-2xl">
+          <p className="offtime-kicker opacity-60">OFFTIME · Valutazione</p>
 
-          <h2 className="offtime-display mt-3 text-4xl text-inherit leading-[0.92] sm:mt-4 sm:text-6xl lg:text-7xl">
+          <h2 className="offtime-display mt-3 text-4xl leading-[0.92] sm:text-5xl lg:text-7xl">
             Portala da OFFTIME.
           </h2>
 
-          <p className="mt-4 max-w-xl text-base text-inherit leading-relaxed opacity-85 sm:mt-6 sm:text-lg sm:opacity-80">
+          <p className="mt-5 max-w-md text-base leading-relaxed opacity-65 sm:mt-6 sm:text-lg">
             Nessun impegno, nessuna procedura complicata. Vieni a trovarci in
             negozio: ci sediamo al tavolo insieme e analizziamo la tua
             collezione con la cura che merita.
           </p>
 
-          <ol className="mt-8 grid gap-4 sm:grid-cols-3">
-            {steps.map((step) => (
-              <li
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xs"
-                key={step.num}
-              >
-                <span className="font-bold font-mono text-2xl text-offtime-pink-bright tabular-nums">
-                  {step.num}
-                </span>
-                <p className="mt-2 font-semibold text-base text-inherit">
-                  {step.label}
-                </p>
-                <p className="mt-1 text-inherit text-xs leading-relaxed opacity-75 sm:text-sm">
-                  {step.desc}
-                </p>
-              </li>
-            ))}
-          </ol>
+          {/* Editorial number steps — no cards, just typography */}
+          <div className="mt-10 flex flex-col gap-6 sm:mt-12 sm:flex-row sm:gap-10 lg:gap-16">
+            <div>
+              <span className="font-mono text-2xl text-offtime-pink-bright/70 tabular-nums sm:text-3xl lg:text-4xl">
+                01
+              </span>
+              <p className="mt-1 font-medium text-sm sm:text-base">
+                Porta le carte
+              </p>
+            </div>
+            <div>
+              <span className="font-mono text-2xl text-offtime-pink-bright/70 tabular-nums sm:text-3xl lg:text-4xl">
+                02
+              </span>
+              <p className="mt-1 font-medium text-sm sm:text-base">
+                Le guardiamo insieme
+              </p>
+            </div>
+            <div>
+              <span className="font-mono text-2xl text-offtime-pink-bright/70 tabular-nums sm:text-3xl lg:text-4xl">
+                03
+              </span>
+              <p className="mt-1 font-medium text-sm sm:text-base">
+                Scegli il prossimo passo
+              </p>
+            </div>
+          </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center gap-4 sm:mt-12">
             <Link
               className={buttonVariants({
-                className: "h-12 px-8 text-base",
+                className:
+                  "h-14 px-8 text-base shadow-lg shadow-offtime-blue/25 sm:px-10",
                 size: "lg",
               })}
               to="/shop"
@@ -70,7 +59,7 @@ export function FinalCtaSection({ className }: { className?: string }) {
             </Link>
             <Link
               className={buttonVariants({
-                className: "h-12 px-6 text-base",
+                className: "h-14 px-6 text-base sm:px-8",
                 size: "lg",
                 variant: "outline",
               })}

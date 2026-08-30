@@ -41,19 +41,15 @@ export function IntroSection({ className }: IntroSectionProps) {
                 Richiedi una valutazione
               </Link>
               <a
-                className={buttonVariants({
-                  className: "h-12 px-6 text-base",
-                  size: "lg",
-                  variant: "outline",
-                })}
+                className="text-inherit text-sm underline underline-offset-4 opacity-60 transition-opacity hover:opacity-100"
                 href="#charizard"
               >
-                Esplora la storia
+                Scopri di più ↓
               </a>
             </div>
           </div>
 
-          {/* Right Column: Prominent Floating OFFTIME Brand Image */}
+          {/* Right Column: Prominent Floating OFFTIME Brand Emblem */}
           <div className="relative hidden items-center justify-center lg:flex">
             {/* Ambient atmospheric brand glow */}
             <div className="absolute h-96 w-96 rounded-full bg-gradient-to-tr from-offtime-blue/25 via-offtime-pink/20 to-offtime-violet/25 blur-3xl lg:h-[30rem] lg:w-[30rem]" />
