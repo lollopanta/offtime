@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,13 +12,42 @@ function prefersReducedMotion() {
 
 /**
  * Mount Lenis + GSAP ScrollTrigger for the sell-cards experience.
- * Returns normalized scroll progress [0..1] over the wrapper element.
+ * Returns normalized scroll progress [0..1] and programmatic scroll/lock controls.
  */
 export function useSellScroll(
   wrapperRef: React.RefObject<HTMLDivElement | null>
 ) {
   const [progress, setProgress] = useState(0);
   const lenisRef = useRef<Lenis | null>(null);
+
+  const lockScroll = useCallback(() => {
+    const lenis = lenisRef.current as Lenis | null;
+    lenis?.stop();
+  }, []);
+
+  const unlockScroll = useCallback(() => {
+    const lenis = lenisRef.current as Lenis | null;
+    lenis?.start();
+  }, []);
+
+  const scrollToProgress = useCallback(
+    (targetProgress: number) => {
+      const wrapper = wrapperRef.current;
+      if (!wrapper) {
+        return;
+      }
+      const maxScroll = wrapper.scrollHeight - window.innerHeight;
+      const targetY = maxScroll * targetProgress;
+      const lenis = lenisRef.current as Lenis | null;
+      if (lenis) {
+        lenis.scrollTo(targetY, { force: true, immediate: true });
+      }
+      window.scrollTo(0, targetY);
+      setProgress(targetProgress);
+      ScrollTrigger.update();
+    },
+    [wrapperRef]
+  );
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -59,6 +88,7 @@ export function useSellScroll(
     });
 
     return () => {
+      document.body.style.overflow = "";
       ctx.revert();
       if (lenis) {
         gsap.ticker.remove((time) => lenis?.raf(time * 1000));
@@ -71,5 +101,11 @@ export function useSellScroll(
     };
   }, [wrapperRef]);
 
-  return { prefersReducedMotion: prefersReducedMotion(), progress };
+  return {
+    lockScroll,
+    prefersReducedMotion: prefersReducedMotion(),
+    progress,
+    scrollToProgress,
+    unlockScroll,
+  };
 }

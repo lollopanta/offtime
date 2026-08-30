@@ -95,12 +95,12 @@ function getChapterBaseX(
     return activeIndex === 1 ? 0.48 : -0.52;
   }
   if (activeIndex === 0) {
-    return -0.62;
+    return -0.86;
   }
   if (activeIndex === 1) {
-    return 0.62;
+    return 0.86;
   }
-  return -0.58;
+  return -0.82;
 }
 
 function getBaseScale(profile: ViewportProfile): number {
@@ -203,8 +203,8 @@ function computeTransitionTransforms(
   if (activeIndex === 0) {
     rotY =
       transitionProgress < 0.5
-        ? MathUtils.lerp(0.06, Math.PI / 2, transitionProgress * 2)
-        : MathUtils.lerp(-Math.PI / 2, -0.06, (transitionProgress - 0.5) * 2);
+        ? MathUtils.lerp(0.06, 0.25, transitionProgress * 2)
+        : MathUtils.lerp(-0.25, -0.06, (transitionProgress - 0.5) * 2);
   } else {
     const swapPoint = 0.38;
     rotY =
@@ -281,7 +281,7 @@ function computeSlabTransforms(
   const baseScale = getBaseScale(profile);
 
   if (isCtaPhase) {
-    let targetX = 0.62;
+    let targetX = 0.86;
     if (isMobile) {
       targetX = 0.15;
     } else if (isTablet) {
@@ -358,7 +358,7 @@ function getReducedMotionX(
     return 0;
   }
   if (isCtaPhase) {
-    return 0.62;
+    return 0.86;
   }
   return getChapterBaseX(activeIndex, profile);
 }

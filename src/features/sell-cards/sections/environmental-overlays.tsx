@@ -53,11 +53,14 @@ export function EnvironmentalOverlays({
       {/* 1. FIRE / CHARIZARD AMBIENCE */}
       <div
         className="absolute inset-0 transition-opacity duration-700 ease-out"
+        data-active={fireOpacity > 0.01}
         style={{ opacity: fireOpacity }}
       >
         {/* Deep ambient crimson & burnt orange radial glow */}
         <div className="absolute top-[20%] left-[2%] h-[650px] w-[650px] rounded-full bg-gradient-to-br from-[#c0392b]/30 via-[#d35400]/20 to-transparent blur-[140px]" />
         <div className="absolute right-[5%] bottom-[15%] h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-[#962d22]/20 via-[#e67e22]/10 to-transparent blur-[110px]" />
+        <div className="sell-fire-plume absolute -bottom-[12%] -left-[8%] h-[62%] w-[46%] origin-bottom" />
+        <div className="sell-fire-plume sell-fire-plume-secondary absolute -bottom-[16%] left-[14%] h-[46%] w-[28%] origin-bottom" />
 
         {/* Abstract SVG thermal currents */}
         <svg
@@ -103,19 +106,29 @@ export function EnvironmentalOverlays({
         </svg>
 
         {/* Floating subtle ember dots */}
-        <div className="absolute top-[32%] left-[18%] h-1.5 w-1.5 rounded-full bg-[#f39c12] opacity-80 shadow-[0_0_10px_#f39c12]" />
-        <div className="absolute top-[18%] left-[10%] h-1 w-1 rounded-full bg-[#e67e22] opacity-70 shadow-[0_0_8px_#e67e22]" />
-        <div className="absolute top-[48%] left-[24%] h-1 w-1 rounded-full bg-[#f1c40f] opacity-60 shadow-[0_0_6px_#f1c40f]" />
+        <div className="sell-ember absolute top-[32%] left-[18%] h-1.5 w-1.5 rounded-full bg-[#f39c12] shadow-[0_0_10px_#f39c12]" />
+        <div className="sell-ember absolute top-[18%] left-[10%] h-1 w-1 rounded-full bg-[#e67e22] shadow-[0_0_8px_#e67e22]" />
+        <div className="sell-ember absolute top-[48%] left-[24%] h-1 w-1 rounded-full bg-[#f1c40f] shadow-[0_0_6px_#f1c40f]" />
+        <div className="sell-ember absolute top-[66%] left-[7%] h-1 w-1 rounded-full bg-[#ff9f43] shadow-[0_0_8px_#ff9f43]" />
+        <div className="sell-ember absolute top-[74%] left-[29%] h-1.5 w-1.5 rounded-full bg-[#e74c3c] shadow-[0_0_10px_#e74c3c]" />
       </div>
 
       {/* 2. SHADOW / GENGAR PSYCHIC AMBIENCE */}
       <div
         className="absolute inset-0 transition-opacity duration-700 ease-out"
+        data-active={shadowOpacity > 0.01}
         style={{ opacity: shadowOpacity }}
       >
         {/* Deep violet & OFFTIME pink aura behind Gengar (Right side) */}
         <div className="absolute top-[15%] right-[6%] h-[700px] w-[700px] rounded-full bg-gradient-to-br from-[#8b68d7]/35 via-[#ef75aa]/20 to-transparent blur-[150px]" />
         <div className="absolute top-[35%] left-[5%] h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-[#4658ad]/20 via-[#8b68d7]/10 to-transparent blur-[120px]" />
+        <div className="sell-ghost-shadow absolute right-[-8%] bottom-[2%] h-[40%] w-[52%] origin-center" />
+        <div className="sell-ghost-eyes absolute top-[19%] right-[8%] hidden origin-center items-center gap-5 md:flex">
+          <span className="sell-ghost-eye" />
+          <span className="sell-ghost-eye -scale-x-100" />
+        </div>
+        <div className="sell-wisp absolute top-[30%] right-[9%] h-16 w-12 origin-bottom" />
+        <div className="sell-wisp sell-wisp-secondary absolute right-[29%] bottom-[21%] h-12 w-9 origin-bottom" />
 
         {/* Psychic Resonance Waves & Hypnotic Rings */}
         <svg
@@ -208,11 +221,31 @@ export function EnvironmentalOverlays({
       {/* 3. CLOUD / GEAR 5 NIKA AMBIENCE — Soft Pearl Smoke Gray */}
       <div
         className="absolute inset-0 transition-opacity duration-700 ease-out"
+        data-active={cloudOpacity > 0.01}
         style={{ opacity: cloudOpacity }}
       >
         {/* Soft diffused pearl & silver glow on atmospheric slate canvas */}
         <div className="absolute top-[15%] left-[5%] h-[700px] w-[700px] rounded-full bg-gradient-to-br from-[#cbd5e1]/15 via-[#94a3b8]/10 to-transparent blur-[140px]" />
         <div className="absolute top-[30%] right-[8%] h-[550px] w-[550px] rounded-full bg-gradient-to-tr from-[#38bdf8]/10 via-[#e2e8f0]/8 to-transparent blur-[120px]" />
+        <div className="sell-nika-halo absolute top-[12%] -left-[8%] h-[72%] w-[56%] origin-center" />
+        <div className="sell-cloud-puff absolute top-[21%] left-[3%] h-24 w-36 origin-center" />
+        <div className="sell-cloud-puff sell-cloud-puff-secondary absolute bottom-[17%] left-[24%] h-20 w-32 origin-center" />
+
+        <svg
+          aria-hidden="true"
+          className="absolute top-[13%] left-[26%] h-[36%] w-[18%] overflow-visible"
+          viewBox="0 0 180 320"
+        >
+          <g className="sell-nika-lightning">
+            <path
+              d="M126 8 55 139h48L31 312l132-190h-55Z"
+              fill="none"
+              stroke="#f8fafc"
+              strokeLinejoin="round"
+              strokeWidth="8"
+            />
+          </g>
+        </svg>
 
         {/* Graphic Hagoromo cloud ribbons and floating mist */}
         <svg

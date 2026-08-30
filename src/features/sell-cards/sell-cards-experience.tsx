@@ -57,8 +57,13 @@ function computeBgColor(progress: number): string {
 
 export function SellCardsExperience() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { progress, prefersReducedMotion: reducedMotion } =
-    useSellScroll(wrapperRef);
+  const {
+    progress,
+    prefersReducedMotion: reducedMotion,
+    lockScroll,
+    unlockScroll,
+    scrollToProgress,
+  } = useSellScroll(wrapperRef);
   const [canvasReady, setCanvasReady] = useState(false);
   const [webglFailed] = useState(false);
 
@@ -117,8 +122,23 @@ export function SellCardsExperience() {
       {/* 2D Environmental Overlays (Fire Embers, Gengar Shadow Aura, Gear 5 Mist) */}
       <EnvironmentalOverlays progress={progress} />
 
-      {/* Authored Cloud Transition Video Overlay (Gengar -> Luffy) */}
-      <CloudTransition progress={progress} reducedMotion={reducedMotion} />
+      {/* Authored Cloud Transition Video Overlay (Cinematic Screen Lock & Jump to Luffy) */}
+      <CloudTransition
+        lockScroll={lockScroll}
+        onPeakCoverage={(dir) => {
+          if (dir === "forward") {
+            scrollToProgress(0.73);
+          } else {
+            scrollToProgress(0.48);
+          }
+        }}
+        onTransitionEnd={() => {
+          unlockScroll();
+        }}
+        progress={progress}
+        reducedMotion={reducedMotion}
+      />
+
       {/* HTML Story — scrolls naturally over the fixed canvas */}
       <div>
         {/* Intro — OFFTIME Branded Entrance */}

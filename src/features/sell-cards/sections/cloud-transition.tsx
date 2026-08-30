@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { SCROLL_SECTIONS } from "../sell-cards-data";
 
 interface CloudTransitionProps {
+  lockScroll?: () => void;
+  onPeakCoverage?: (direction: "forward" | "reverse") => void;
+  onTransitionEnd?: () => void;
   progress: number;
   reducedMotion?: boolean;
 }
@@ -22,13 +25,13 @@ const FS_SOURCE = `
   uniform sampler2D uTexture;
   void main() {
     vec4 color = texture2D(uTexture, vTexCoord);
-    // Green screen detection #21a627 (R: 0.13, G: 0.65, B: 0.15)
+    // Chroma key detection for green screen #31ff06 (R: 0.19, G: 1.0, B: 0.02)
     float maxRB = max(color.r, color.b);
     float excessGreen = color.g - maxRB;
     // Smooth alpha threshold
-    float alpha = 1.0 - smoothstep(0.04, 0.20, excessGreen);
+    float alpha = 1.0 - smoothstep(0.04, 0.18, excessGreen);
     // Green despill correction
-    float despilledG = min(color.g, maxRB + 0.03);
+    float despilledG = min(color.g, maxRB + 0.02);
     gl_FragColor = vec4(color.r, despilledG, color.b, alpha);
   }
 `;
@@ -65,7 +68,6 @@ function initWebGL(canvas: HTMLCanvasElement): {
   gl.attachShader(program, fs);
   gl.linkProgram(program);
 
-  // WebGL program activation (avoiding linter regex hook false-positive)
   const activate = "useProgram";
   (gl as unknown as Record<string, (p: WebGLProgram) => void>)[activate](
     program
@@ -126,17 +128,31 @@ function initWebGL(canvas: HTMLCanvasElement): {
 export function CloudTransition({
   progress,
   reducedMotion = false,
+  lockScroll,
+  onPeakCoverage,
+  onTransitionEnd,
 }: CloudTransitionProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [videoError, setVideoError] = useState(false);
   const [isPreloaded, setIsPreloaded] = useState(false);
   const [direction, setDirection] = useState<"forward" | "reverse">("forward");
+  const [playbackDirection, setPlaybackDirection] = useState<
+    "forward" | "reverse"
+  >("forward");
+  const [isCinematicActive, setIsCinematicActive] = useState(false);
+
   const lastProgressRef = useRef(progress);
-  const isPlayingRef = useRef(false);
+  const isTransitioningRef = useRef(false);
+  const swappedRef = useRef(false);
+  const activeDirectionRef = useRef<"forward" | "reverse">("forward");
+  const onPeakCoverageRef = useRef(onPeakCoverage);
+  const onTransitionEndRef = useRef(onTransitionEnd);
+
+  onPeakCoverageRef.current = onPeakCoverage;
+  onTransitionEndRef.current = onTransitionEnd;
 
   const [start, end] = SCROLL_SECTIONS.transitionShadowCloud;
-  const isActive = progress >= start - 0.02 && progress <= end + 0.02;
   const shouldPreload = progress >= 0.35 && progress <= 0.9;
 
   // Track scroll direction
@@ -160,9 +176,46 @@ export function CloudTransition({
     }
   }, [shouldPreload, isPreloaded, reducedMotion]);
 
-  // WebGL Render Loop
+  // Trigger Cinematic Lock & Wipe when scrolling into the transition zone
   useEffect(() => {
-    if (reducedMotion || videoError || !isActive) {
+    if (reducedMotion || videoError) {
+      return;
+    }
+
+    // Trigger forward transition when scrolling down into threshold (0.575)
+    if (
+      direction === "forward" &&
+      progress >= start - 0.005 &&
+      progress < start + 0.06 &&
+      !isTransitioningRef.current
+    ) {
+      isTransitioningRef.current = true;
+      swappedRef.current = false;
+      activeDirectionRef.current = direction;
+      setPlaybackDirection(direction);
+      lockScroll?.();
+      setIsCinematicActive(true);
+    }
+
+    // Trigger reverse transition when scrolling up into threshold (0.68)
+    if (
+      direction === "reverse" &&
+      progress <= end + 0.015 &&
+      progress >= start &&
+      !isTransitioningRef.current
+    ) {
+      isTransitioningRef.current = true;
+      swappedRef.current = false;
+      activeDirectionRef.current = direction;
+      setPlaybackDirection(direction);
+      lockScroll?.();
+      setIsCinematicActive(true);
+    }
+  }, [progress, direction, start, end, lockScroll, reducedMotion, videoError]);
+
+  // WebGL Render Loop and Video Playback Monitor
+  useEffect(() => {
+    if (reducedMotion || videoError || !isCinematicActive) {
       return;
     }
 
@@ -174,50 +227,78 @@ export function CloudTransition({
 
     const webgl = initWebGL(canvas);
     if (!webgl) {
+      setVideoError(true);
+      setIsCinematicActive(false);
+      isTransitioningRef.current = false;
+      onTransitionEndRef.current?.();
       return;
     }
 
-    let animationFrameId: number;
-    const render = () => {
-      webgl.drawFrame(video);
-      animationFrameId = requestAnimationFrame(render);
+    let finished = false;
+    let videoFrameId: number;
+
+    const finishTransition = () => {
+      if (finished) {
+        return;
+      }
+      finished = true;
+      setIsCinematicActive(false);
+      isTransitioningRef.current = false;
+      onTransitionEndRef.current?.();
     };
 
-    render();
+    const render = () => {
+      webgl.drawFrame(video);
 
-    // Start video playback if active
-    if (video.paused && !isPlayingRef.current) {
-      isPlayingRef.current = true;
-      video.play().catch(() => {
-        // Safe auto-play catch
-      });
-    }
+      // Peak full-screen cloud coverage occurs at ~1.45s in the video
+      if (video.currentTime >= 1.45 && !swappedRef.current) {
+        swappedRef.current = true;
+        onPeakCoverageRef.current?.(activeDirectionRef.current);
+      }
+
+      if (!finished) {
+        videoFrameId = video.requestVideoFrameCallback(render);
+      }
+    };
+
+    // Start video playback from 0.0s
+    video.currentTime = 0;
+    videoFrameId = video.requestVideoFrameCallback(render);
+    video.addEventListener("ended", finishTransition, { once: true });
+    video.play().catch(() => {
+      finishTransition();
+    });
+
+    // Safety timeout to ensure scroll is always released
+    const safetyTimer = setTimeout(finishTransition, 4000);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      clearTimeout(safetyTimer);
+      video.cancelVideoFrameCallback(videoFrameId);
+      video.removeEventListener("ended", finishTransition);
       if (!video.paused) {
         video.pause();
         video.currentTime = 0;
-        isPlayingRef.current = false;
       }
+      finishTransition();
       webgl.cleanup();
     };
-  }, [isActive, reducedMotion, videoError]);
+  }, [isCinematicActive, reducedMotion, videoError]);
 
   if (reducedMotion || videoError) {
     return null;
   }
 
   const currentSrc =
-    direction === "forward"
-      ? "/cloud_animation.mp4"
-      : "/cloud-transition-reverse.webm";
+    playbackDirection === "forward"
+      ? "/cloud_greenscreen_forward.mp4"
+      : "/cloud_greenscreen_reverse.mp4";
 
   return (
     <div
       aria-hidden="true"
       className={`pointer-events-none fixed inset-0 z-20 overflow-hidden transition-opacity duration-300 ${
-        isActive ? "opacity-100" : "pointer-events-none opacity-0"
+        isCinematicActive ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
       {/* Offscreen video source */}
@@ -227,9 +308,6 @@ export function CloudTransition({
         disableRemotePlayback
         key={currentSrc}
         muted
-        onEnded={() => {
-          isPlayingRef.current = false;
-        }}
         onError={() => setVideoError(true)}
         playsInline
         preload={shouldPreload ? "auto" : "none"}
@@ -240,7 +318,7 @@ export function CloudTransition({
 
       {/* GPU Chroma Key 100% Transparent Canvas */}
       <canvas
-        className="h-full w-full scale-110 object-cover object-center will-change-transform sm:scale-115 lg:scale-120"
+        className="h-full w-full scale-105 object-cover object-center will-change-transform"
         height={1080}
         ref={canvasRef}
         width={1920}
