@@ -2,13 +2,12 @@ import {
   HeartIcon,
   MenuIcon,
   SearchIcon,
-  ShoppingBagIcon,
   UserRoundIcon,
   XIcon,
 } from "lucide-react";
 import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CartDrawer } from "@/components/offtime/cart-drawer";
+import { CartEntry } from "@/components/offtime/cart-entry";
 import { Button } from "@/components/ui/button";
 import {
   Combobox,
@@ -523,27 +522,7 @@ export function SiteHeader({
                   </DropdownMenu>
                 </div>
 
-                <CartDrawer
-                  trigger={
-                    <Button
-                      aria-label={
-                        cartCount === 1
-                          ? "Carrello, 1 articolo"
-                          : `Carrello, ${cartCount} articoli`
-                      }
-                      className={cn("relative", navbarIconClass)}
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <ShoppingBagIcon aria-hidden="true" />
-                      {cartCount > 0 ? (
-                        <span className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-offtime-pink font-bold text-[0.625rem] text-background tabular-nums">
-                          {cartCount > 9 ? "9+" : String(cartCount)}
-                        </span>
-                      ) : null}
-                    </Button>
-                  }
-                />
+                <CartEntry className={navbarIconClass} count={cartCount} />
               </div>
             </div>
           </div>

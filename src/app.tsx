@@ -6,8 +6,9 @@ import { StorefrontShell } from "@/components/offtime/storefront-shell";
 import { CartProvider } from "@/features/cart/cart-context";
 import { CartPage } from "@/pages/cart-page";
 import { CatalogPage } from "@/pages/catalog-page";
+import { CommunityPage } from "@/pages/community-page";
 import { DesignSystemPage } from "@/pages/design-system";
-import { DestinationPage, EventsPage } from "@/pages/destination-pages";
+import { EventsPage } from "@/pages/destination-pages";
 import { NotFoundPage } from "@/pages/not-found-page";
 import { ProductPage } from "@/pages/product-page";
 import { StorefrontPage } from "@/pages/storefront";
@@ -38,10 +39,7 @@ export function App() {
               }
               path="vendi"
             />
-            <Route
-              element={<DestinationPage kind="community" />}
-              path="community"
-            />
+            <Route element={<CommunityPage />} path="community" />
             <Route element={<CartPage />} path="carrello" />
             <Route element={<NotFoundPage />} path="*" />
           </Route>

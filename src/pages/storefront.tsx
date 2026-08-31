@@ -9,11 +9,42 @@ import { campaigns, gameCategories, homeEvents } from "@/content/home";
 import { products } from "@/domain/catalog";
 
 export function StorefrontPage() {
+  const saleProducts = products.filter((product) => product.status === "sale");
+  const preorderProducts = products.filter(
+    (product) => product.status === "preorder"
+  );
+
   return (
     <main className="w-full max-w-full overflow-x-hidden" id="content">
       <HeroCarousel campaigns={campaigns} />
       <GameCategories categories={gameCategories} />
-      <ProductsSection products={products} />
+      <ProductsSection
+        ariaLabel="Nuovi prodotti OFFTIME"
+        ctaLabel="Tutti i prodotti"
+        ctaTo="/shop"
+        eyebrow="Nuovi arrivi"
+        id="catalogo"
+        products={products}
+        title="Pronti per il tuo raccoglitore."
+      />
+      <ProductsSection
+        ariaLabel="Prodotti OFFTIME in saldo"
+        ctaLabel="Vedi tutti i saldi"
+        ctaTo="/shop?status=sale"
+        eyebrow="Offerte del momento"
+        id="saldi"
+        products={saleProducts}
+        title="Saldi."
+      />
+      <ProductsSection
+        ariaLabel="Preordini OFFTIME"
+        ctaLabel="Vedi tutti i preordini"
+        ctaTo="/preordini"
+        eyebrow="In arrivo"
+        id="preordini"
+        products={preorderProducts}
+        title="Preordini."
+      />
       <EventsSection events={homeEvents} />
 
       <section className="offtime-container pb-20 sm:pb-28">

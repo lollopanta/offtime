@@ -127,7 +127,7 @@ export function SellCardsExperience() {
         lockScroll={lockScroll}
         onPeakCoverage={(dir) => {
           if (dir === "forward") {
-            scrollToProgress(0.73);
+            scrollToProgress(0.79);
           } else {
             scrollToProgress(0.48);
           }

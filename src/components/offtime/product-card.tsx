@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 
 export interface ProductCardProps {
   className?: string;
+  compact?: boolean;
   isLoading?: boolean;
   onAddToCart?: (product: Product) => void;
   onWishlistChange?: (product: Product, isWishlisted: boolean) => void;
@@ -34,15 +35,26 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
-export function ProductCardSkeleton({ className }: { className?: string }) {
+export function ProductCardSkeleton({
+  className,
+  compact = false,
+}: {
+  className?: string;
+  compact?: boolean;
+}) {
   return (
     <article
       aria-busy="true"
       aria-label="Caricamento prodotto"
       className={cn("offtime-surface overflow-hidden bg-surface-1", className)}
     >
-      <Skeleton className="aspect-[4/5] rounded-none bg-surface-2" />
-      <div className="flex flex-col gap-3 p-5">
+      <Skeleton
+        className={cn(
+          "rounded-none bg-surface-2",
+          compact ? "aspect-[5/4]" : "aspect-[4/5]"
+        )}
+      />
+      <div className={cn("flex flex-col", compact ? "gap-2 p-4" : "gap-3 p-5")}>
         <Skeleton className="h-5 w-24 bg-surface-2" />
         <div className="flex flex-col gap-2">
           <Skeleton className="h-5 w-4/5 bg-surface-2" />
@@ -60,6 +72,7 @@ export function ProductCardSkeleton({ className }: { className?: string }) {
 
 export function ProductCard({
   className,
+  compact = false,
   isLoading = false,
   onAddToCart,
   onWishlistChange,
@@ -70,7 +83,7 @@ export function ProductCard({
   const [isAdded, setIsAdded] = React.useState(false);
 
   if (isLoading || !product) {
-    return <ProductCardSkeleton className={className} />;
+    return <ProductCardSkeleton className={className} compact={compact} />;
   }
 
   const isSoldOut = product.status === "sold-out";
@@ -111,7 +124,10 @@ export function ProductCard({
     >
       <Link
         aria-label={`Guarda ${product.name}`}
-        className="relative block aspect-[4/5] overflow-hidden bg-surface-2"
+        className={cn(
+          "relative block overflow-hidden bg-surface-2",
+          compact ? "aspect-[5/4]" : "aspect-[4/5]"
+        )}
         to={productHref}
       >
         <img
@@ -146,7 +162,7 @@ export function ProductCard({
         </div>
       </Link>
 
-      <div className="flex flex-col gap-3 p-5">
+      <div className={cn("flex flex-col", compact ? "gap-2 p-4" : "gap-3 p-5")}>
         <p
           className="font-mono font-semibold text-[0.6875rem] text-offtime-pink-bright uppercase tracking-[0.1em]"
           translate="no"

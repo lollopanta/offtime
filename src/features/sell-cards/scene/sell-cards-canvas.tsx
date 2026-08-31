@@ -95,12 +95,12 @@ function getChapterBaseX(
     return activeIndex === 1 ? 0.48 : -0.52;
   }
   if (activeIndex === 0) {
-    return -0.86;
+    return -1.06;
   }
   if (activeIndex === 1) {
-    return 0.86;
+    return 1.06;
   }
-  return -0.82;
+  return -1.02;
 }
 
 function getBaseScale(profile: ViewportProfile): number {
@@ -281,7 +281,7 @@ function computeSlabTransforms(
   const baseScale = getBaseScale(profile);
 
   if (isCtaPhase) {
-    let targetX = 0.86;
+    let targetX = 1.06;
     if (isMobile) {
       targetX = 0.15;
     } else if (isTablet) {
@@ -358,7 +358,7 @@ function getReducedMotionX(
     return 0;
   }
   if (isCtaPhase) {
-    return 0.86;
+    return profile === "desktop" ? 1.06 : 0.86;
   }
   return getChapterBaseX(activeIndex, profile);
 }
