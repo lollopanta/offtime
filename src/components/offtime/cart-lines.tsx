@@ -2,6 +2,7 @@ import { MinusIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Button, buttonVariants } from "@/components/ui/button";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { productPath } from "@/domain/catalog";
 import { useCart } from "@/features/cart/cart-context";
 import { cn } from "@/lib/utils";
@@ -50,12 +51,13 @@ export function CartLines({ compact = false }: { compact?: boolean }) {
             className="row-span-2 shrink-0 rounded-md"
             to={productPath(line.product)}
           >
-            <img
+            <ImageWithSkeleton
               alt=""
-              className={cn(
-                "rounded-md border border-border bg-surface-2 object-contain",
+              className="rounded-md border border-border object-contain"
+              containerClassName={cn(
                 compact ? "size-20" : "h-36 w-28 sm:h-44 sm:w-[8.5rem]"
               )}
+              contentFit
               height={compact ? "80" : "176"}
               src={line.product.image}
               width={compact ? "80" : "136"}

@@ -10,6 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { getEventBySlug, getEventStatus } from "@/domain/events";
 import { communityContent } from "@/features/community/community-content";
 import { cn } from "@/lib/utils";
@@ -83,12 +84,10 @@ export function EventDetailPage() {
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:gap-16">
         <div className="offtime-surface overflow-hidden bg-surface-1 lg:sticky lg:top-28 lg:self-start">
-          <img
+          <ImageWithSkeleton
             alt={`${event.game}: ${event.name}`}
-            className={cn(
-              "aspect-[4/5] w-full object-cover",
-              isSoldOut && "grayscale"
-            )}
+            className={cn("object-cover", isSoldOut && "grayscale")}
+            containerClassName="aspect-[4/5] w-full"
             height="900"
             src={event.image}
             width="720"

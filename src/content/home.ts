@@ -48,8 +48,7 @@ export const campaigns: Campaign[] = [
     },
     href: "/shop?sort=price-desc",
     id: "ebay-auctions",
-    image:
-      "https://placehold.co/1600x1000/241629/f7f7fa?text=OFFTIME%0AAUCTIONS",
+    image: "https://i.imgur.com/zodb6VD.jpeg",
     imageAlt: "Artwork per le aste eBay OFFTIME",
     tone: "violet",
   },
@@ -78,7 +77,7 @@ export const campaigns: Campaign[] = [
     },
     href: "/community",
     id: "social-drops",
-    image: "https://placehold.co/1600x1000/2a1723/f7f7fa?text=SOCIAL%0ADROPS",
+    image: "https://i.imgur.com/ix9aWEC.jpeg",
     imageAlt: "Artwork per i social drop OFFTIME",
     tone: "pink",
   },

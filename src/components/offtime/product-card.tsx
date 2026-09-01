@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Product, ProductStatus } from "@/domain/catalog";
 import { productPath } from "@/domain/catalog";
@@ -120,12 +121,14 @@ export function ProductCard({
         )}
         to={productHref}
       >
-        <img
+        <ImageWithSkeleton
           alt={product.imageAlt}
           className={cn(
-            "size-full origin-center scale-[1.04] object-cover object-center transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/product-card:scale-100 motion-reduce:scale-100 motion-reduce:transition-none",
+            "origin-center object-center transition-transform duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none group-hover/product-card:[--content-fit-hover-scale:0.96] motion-reduce:[--content-fit-hover-scale:1]",
             isSoldOut && "opacity-60 grayscale"
           )}
+          containerClassName="size-full"
+          contentFit
           height="1125"
           loading="lazy"
           src={product.image}

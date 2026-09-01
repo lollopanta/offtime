@@ -13,6 +13,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import type { Campaign } from "@/content/home";
 import { cn } from "@/lib/utils";
 
@@ -185,14 +186,15 @@ export function HeroCarousel({ campaigns }: { campaigns: Campaign[] }) {
               key={campaign.id}
             >
               <article className="relative min-h-[32rem] overflow-hidden bg-surface-2 sm:min-h-[40rem] lg:min-h-[48rem]">
-                <img
+                <ImageWithSkeleton
                   alt={campaign.imageAlt}
                   className={cn(
-                    "absolute inset-0 size-full object-cover",
+                    "object-cover",
                     campaign.image.includes("placehold.co")
                       ? "object-center"
                       : "object-bottom"
                   )}
+                  containerClassName="absolute inset-0 size-full"
                   data-campaign-art
                   fetchPriority={index === 0 ? "high" : "auto"}
                   height="1000"

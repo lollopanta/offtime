@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { type Event, getEventStatus } from "@/domain/events";
 import { cn } from "@/lib/utils";
@@ -108,12 +109,13 @@ export function EventCard({
       )}
     >
       <div className="relative min-h-56 overflow-hidden bg-offtime-blue sm:min-h-full">
-        <img
+        <ImageWithSkeleton
           alt={event.imageAlt ?? `${event.game}: ${event.name}`}
           className={cn(
-            "size-full object-cover object-center opacity-90 contrast-125 transition-transform duration-700 ease-out group-hover/event:scale-105 motion-reduce:transition-none",
+            "object-cover object-center opacity-90 contrast-125 transition-transform duration-700 ease-out group-hover/event:scale-105 motion-reduce:transition-none",
             isSoldOut && "grayscale"
           )}
+          containerClassName="size-full"
           height="900"
           loading="lazy"
           src={event.image}

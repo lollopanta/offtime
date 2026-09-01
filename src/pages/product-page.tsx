@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { ProductCard } from "@/components/offtime/product-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import type { Product } from "@/domain/catalog";
 import { getProductBySlug, getRelatedProducts } from "@/domain/catalog";
 import { useCart } from "@/features/cart/cart-context";
@@ -99,9 +100,11 @@ function ProductDetail({ product }: { product: Product }) {
       <div className="mt-8 grid gap-10 md:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] md:gap-10 lg:gap-16">
         <div className="md:sticky md:top-28 md:self-start">
           <div className="offtime-surface overflow-hidden bg-surface-1">
-            <img
+            <ImageWithSkeleton
               alt={product.imageAlt}
-              className="aspect-[4/5] w-full object-cover"
+              className="object-cover"
+              containerClassName="aspect-[4/5] w-full"
+              contentFit
               height="1125"
               src={selectedImage}
               width="900"
@@ -119,9 +122,11 @@ function ProductDetail({ product }: { product: Product }) {
                   onClick={() => setImage(index)}
                   type="button"
                 >
-                  <img
+                  <ImageWithSkeleton
                     alt=""
-                    className="size-16 object-cover"
+                    className="object-cover"
+                    containerClassName="size-16"
+                    contentFit
                     height="80"
                     src={source}
                     width="64"
