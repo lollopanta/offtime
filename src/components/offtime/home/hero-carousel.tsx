@@ -14,6 +14,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import type { Campaign } from "@/content/home";
+import { cn } from "@/lib/utils";
 
 const wheelCooldown = 600;
 const wheelGestureGap = 180;
@@ -183,10 +184,15 @@ export function HeroCarousel({ campaigns }: { campaigns: Campaign[] }) {
               inert={index !== current}
               key={campaign.id}
             >
-              <article className="relative min-h-[28rem] overflow-hidden bg-surface-2 sm:min-h-[34rem] lg:min-h-[42rem]">
+              <article className="relative min-h-[32rem] overflow-hidden bg-surface-2 sm:min-h-[40rem] lg:min-h-[48rem]">
                 <img
                   alt={campaign.imageAlt}
-                  className="absolute inset-0 size-full object-cover object-center"
+                  className={cn(
+                    "absolute inset-0 size-full object-cover",
+                    campaign.image.includes("placehold.co")
+                      ? "object-center"
+                      : "object-bottom"
+                  )}
                   data-campaign-art
                   fetchPriority={index === 0 ? "high" : "auto"}
                   height="1000"
