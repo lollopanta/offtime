@@ -54,17 +54,17 @@ export const campaigns: Campaign[] = [
     tone: "violet",
   },
   {
-    accessibleLabel: "Pokemon TCG: preordini e collezioni",
+    accessibleLabel: "Pokémon TCG: collezioni",
     content: {
       ctaLabel: "Scopri i set",
       description: "Dai un'occhiata alle collezioni di carte Pokemon.",
       eyebrow: "Pokemon",
-      title: "Pezzi rari, un’offerta alla volta.",
+      title: "Colleziona la prossima evoluzione.",
     },
-    href: "/shop?sort=price-desc",
-    id: "ebay-auctions",
+    href: "/shop/pokemon?sort=price-desc",
+    id: "pokemon-collections",
     image: "https://i.imgur.com/y2VMpfJ.jpeg",
-    imageAlt: "Artwork per le aste eBay OFFTIME",
+    imageAlt: "Artwork per le collezioni Pokémon",
     tone: "violet",
   },
   {

@@ -39,8 +39,7 @@ export function EventsPage() {
         Il prossimo match comincia qui.
       </h1>
       <p className="mt-5 max-w-2xl text-lg text-muted-foreground leading-8">
-        Tornei, leghe e serate community: scegli il tuo tavolo e prenota prima
-        che finisca.
+        Tornei, leghe e serate community: trova il tuo tavolo prima che finisca.
       </p>
       <div className="mt-10 grid gap-5 lg:grid-cols-2">
         {events.map((event) => (

@@ -64,7 +64,7 @@ export const products = [
   record({
     availability: 18,
     description:
-      "Preordine per il booster box Royal Blood. La spedizione parte appena il prodotto arriva in negozio.",
+      "Booster box disponibile in preorder. Contatta OFFTIME per informazioni sulla disponibilità.",
     game: "One Piece",
     gameSlug: "one-piece",
     id: "op10-bb-eng",

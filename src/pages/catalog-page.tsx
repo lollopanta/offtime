@@ -173,7 +173,7 @@ function getCatalogIntro(preorderOnly: boolean, selectedGameName?: string) {
   if (preorderOnly) {
     return {
       description:
-        "Prenota ora: ti aggiorniamo quando il prodotto arriva in negozio.",
+        "I prossimi set in arrivo, selezionati per la tua collezione.",
       eyebrow: "In arrivo",
       title: "Blocca il tuo prossimo set.",
     };

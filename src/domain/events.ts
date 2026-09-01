@@ -60,3 +60,17 @@ export const events = [
     totalSlots: 16,
   },
 ] as const satisfies readonly Event[];
+
+export function getEventBySlug(slug: string) {
+  return events.find((event) => event.id === slug);
+}
+
+export function getEventStatus(event: Event) {
+  if (event.availableSlots <= 0) {
+    return "sold-out" as const;
+  }
+
+  return event.availableSlots <= Math.ceil(event.totalSlots * 0.2)
+    ? ("almost-full" as const)
+    : ("available" as const);
+}

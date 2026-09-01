@@ -42,9 +42,6 @@ export function CartPage() {
               <span>Subtotale</span>
               <span>{currency.format(subtotal)}</span>
             </div>
-            <p className="mt-4 text-muted-foreground text-sm leading-6">
-              Spedizione calcolata successivamente.
-            </p>
             <Button
               className="mt-6 w-full disabled:opacity-100"
               disabled

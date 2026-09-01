@@ -59,6 +59,7 @@ export function useSellScroll(
 
     // Lenis smooth scroll — skip interpolation for reduced motion
     let lenis: Lenis | undefined;
+    let tick: ((time: number) => void) | undefined;
     if (!reduced) {
       lenis = new Lenis({
         lerp: 0.08,
@@ -68,9 +69,10 @@ export function useSellScroll(
 
       // Sync Lenis → GSAP
       lenis.on("scroll", ScrollTrigger.update);
-      gsap.ticker.add((time) => {
+      tick = (time: number) => {
         lenis?.raf(time * 1000);
-      });
+      };
+      gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);
     }
 
@@ -91,12 +93,11 @@ export function useSellScroll(
       document.body.style.overflow = "";
       ctx.revert();
       if (lenis) {
-        gsap.ticker.remove((time) => lenis?.raf(time * 1000));
+        if (tick) {
+          gsap.ticker.remove(tick);
+        }
         lenis.destroy();
         lenisRef.current = null;
-      }
-      for (const t of ScrollTrigger.getAll()) {
-        t.kill();
       }
     };
   }, [wrapperRef]);

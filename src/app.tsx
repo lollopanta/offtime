@@ -9,6 +9,7 @@ import { CatalogPage } from "@/pages/catalog-page";
 import { CommunityPage } from "@/pages/community-page";
 import { DesignSystemPage } from "@/pages/design-system";
 import { EventsPage } from "@/pages/destination-pages";
+import { EventDetailPage } from "@/pages/event-detail-page";
 import { NotFoundPage } from "@/pages/not-found-page";
 import { ProductPage } from "@/pages/product-page";
 import { StorefrontPage } from "@/pages/storefront";
@@ -30,7 +31,7 @@ export function App() {
             <Route element={<ProductPage />} path="prodotto/:slug" />
             <Route element={<CatalogPage preorderOnly />} path="preordini" />
             <Route element={<EventsPage />} path="eventi" />
-            <Route element={<EventsPage />} path="eventi/:eventSlug" />
+            <Route element={<EventDetailPage />} path="eventi/:eventSlug" />
             <Route
               element={
                 <Suspense>

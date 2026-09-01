@@ -21,8 +21,8 @@ export function EventsSection({ events }: { events: readonly Event[] }) {
             Il prossimo match comincia qui.
           </h2>
           <p className="mt-4 max-w-2xl text-pretty text-base text-muted-foreground leading-7">
-            Tornei, leghe e serate community: scegli il tuo tavolo e prenota il
-            posto prima che finisca.
+            Tornei, leghe e serate community: trova il tuo tavolo prima che
+            finisca.
           </p>
         </div>
         <Link

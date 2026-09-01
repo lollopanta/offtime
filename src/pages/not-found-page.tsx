@@ -11,16 +11,20 @@ export function NotFoundPage() {
         Questa carta non è nel raccoglitore.
       </h1>
       <p className="mt-5 max-w-xl text-lg text-muted-foreground leading-8">
-        Il link potrebbe essere cambiato, oppure il prodotto non è più
+        Il link potrebbe essere cambiato, oppure questo contenuto non è più
         disponibile.
       </p>
-      <Link
-        className={buttonVariants({ className: "mt-8", size: "lg" })}
-        to="/shop"
-      >
-        <ArrowLeftIcon aria-hidden="true" data-icon="inline-start" /> Torna al
-        catalogo
-      </Link>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <Link className={buttonVariants({ size: "lg" })} to="/">
+          <ArrowLeftIcon aria-hidden="true" data-icon="inline-start" /> Home
+        </Link>
+        <Link
+          className={buttonVariants({ size: "lg", variant: "outline" })}
+          to="/shop"
+        >
+          Vai allo shop
+        </Link>
+      </div>
     </main>
   );
 }

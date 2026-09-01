@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Event } from "@/domain/events";
+import { type Event, getEventStatus } from "@/domain/events";
 import { cn } from "@/lib/utils";
 
 export interface EventCardProps {
@@ -88,10 +88,10 @@ export function EventCard({
     return <EventCardSkeleton className={className} />;
   }
 
-  const isSoldOut = event.availableSlots <= 0;
+  const eventStatus = getEventStatus(event);
+  const isSoldOut = eventStatus === "sold-out";
   const schedule = formatSchedule(event);
-  const isAlmostFull =
-    !isSoldOut && event.availableSlots <= Math.ceil(event.totalSlots * 0.2);
+  const isAlmostFull = eventStatus === "almost-full";
   let statusLabel = "Posti disponibili";
   if (isSoldOut) {
     statusLabel = "Sold out";
@@ -185,7 +185,7 @@ export function EventCard({
               })}
               to={eventHref}
             >
-              Iscriviti
+              Dettagli evento
               <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
             </Link>
           )}

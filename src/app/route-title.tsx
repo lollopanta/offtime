@@ -1,6 +1,17 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { games, getProductBySlug } from "@/domain/catalog";
+import { getEventBySlug } from "@/domain/events";
+
+const eventTitleForPath = (pathname: string) => {
+  if (!pathname.startsWith("/eventi/")) {
+    return;
+  }
+
+  const [eventSlug] = pathname.slice("/eventi/".length).split("/");
+  const event = eventSlug ? getEventBySlug(eventSlug) : undefined;
+  return event ? `${event.name} | OFFTIME` : "Evento non trovato | OFFTIME";
+};
 
 const titleForPath = (pathname: string) => {
   if (pathname === "/") {
@@ -26,6 +37,10 @@ const titleForPath = (pathname: string) => {
   }
   if (pathname === "/eventi") {
     return "Eventi | OFFTIME";
+  }
+  const eventTitle = eventTitleForPath(pathname);
+  if (eventTitle) {
+    return eventTitle;
   }
   if (pathname === "/vendi") {
     return "Vendi le tue carte | OFFTIME";

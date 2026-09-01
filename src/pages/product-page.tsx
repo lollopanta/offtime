@@ -1,4 +1,4 @@
-import { HeartIcon, MinusIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
 import * as React from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -50,7 +50,6 @@ function ProductDetail({ product }: { product: Product }) {
   const { addProduct } = useCart();
   const [image, setImage] = React.useState(0);
   const [quantity, setQuantity] = React.useState(1);
-  const [wishlisted, setWishlisted] = React.useState(false);
   const [addedQuantity, setAddedQuantity] = React.useState(0);
   const soldOut = product.status === "sold-out";
   const preorder = product.status === "preorder";
@@ -224,20 +223,6 @@ function ProductDetail({ product }: { product: Product }) {
             >
               <ShoppingBagIcon aria-hidden="true" data-icon="inline-start" />
               {primaryActionLabel}
-            </Button>
-            <Button
-              aria-label={
-                wishlisted ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"
-              }
-              aria-pressed={wishlisted}
-              onClick={() => setWishlisted((value) => !value)}
-              size="icon-lg"
-              variant={wishlisted ? "secondary" : "outline"}
-            >
-              <HeartIcon
-                aria-hidden="true"
-                fill={wishlisted ? "currentColor" : "none"}
-              />
             </Button>
           </div>
           <p

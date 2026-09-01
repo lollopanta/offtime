@@ -1,4 +1,4 @@
-import { CheckIcon, HeartIcon, ShoppingBagIcon } from "lucide-react";
+import { CheckIcon, ShoppingBagIcon } from "lucide-react";
 import * as React from "react";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,6 @@ export interface ProductCardProps {
   compact?: boolean;
   isLoading?: boolean;
   onAddToCart?: (product: Product) => void;
-  onWishlistChange?: (product: Product, isWishlisted: boolean) => void;
   product?: Product;
 }
 
@@ -63,7 +62,6 @@ export function ProductCardSkeleton({
         <Skeleton className="mt-1 h-6 w-20 bg-surface-2" />
         <div className="flex gap-2 pt-2">
           <Skeleton className="h-11 flex-1 bg-surface-2" />
-          <Skeleton className="size-11 bg-surface-2" />
         </div>
       </div>
     </article>
@@ -75,11 +73,9 @@ export function ProductCard({
   compact = false,
   isLoading = false,
   onAddToCart,
-  onWishlistChange,
   product,
 }: ProductCardProps) {
   const { addProduct } = useCart();
-  const [isWishlisted, setIsWishlisted] = React.useState(false);
   const [isAdded, setIsAdded] = React.useState(false);
 
   if (isLoading || !product) {
@@ -107,12 +103,6 @@ export function ProductCard({
     } else {
       addProduct(product);
     }
-  };
-
-  const handleWishlist = () => {
-    const nextValue = !isWishlisted;
-    setIsWishlisted(nextValue);
-    onWishlistChange?.(product, nextValue);
   };
 
   return (
@@ -203,22 +193,6 @@ export function ProductCard({
               <AddButtonIcon aria-hidden="true" data-icon="inline-start" />
             )}
             {addButtonLabel}
-          </Button>
-          <Button
-            aria-label={
-              isWishlisted
-                ? `Rimuovi ${product.name} dai preferiti`
-                : `Aggiungi ${product.name} ai preferiti`
-            }
-            aria-pressed={isWishlisted}
-            onClick={handleWishlist}
-            size="icon"
-            variant={isWishlisted ? "secondary" : "outline"}
-          >
-            <HeartIcon
-              aria-hidden="true"
-              fill={isWishlisted ? "currentColor" : "none"}
-            />
           </Button>
         </div>
         <p aria-live="polite" className="sr-only">
