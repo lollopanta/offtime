@@ -48,7 +48,7 @@ export const campaigns: Campaign[] = [
     },
     href: "/shop?sort=price-desc",
     id: "ebay-auctions",
-    image: "https://i.imgur.com/zodb6VD.jpeg",
+    image: "https://i.imgur.com/cKK8x0u.jpeg",
     imageAlt: "Artwork per le aste eBay OFFTIME",
     tone: "violet",
   },
